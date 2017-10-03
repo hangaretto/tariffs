@@ -1,7 +1,15 @@
 <?php
 
-Route::post('/api/v1/magnetar/tariffs/callbacks/paymentAviso', 'Magnetar\Tariffs\Controllers\CallbackController@paymentAviso');
-Route::post('/api/v1/magnetar/tariffs/callbacks/checkOrder', 'Magnetar\Tariffs\Controllers\CallbackController@checkOrder');
+Route::group(['prefix' => 'api/v1/magnetar/tariffs'], function () {
+
+    Route::post('/callbacks/paymentAviso', 'Magnetar\Tariffs\Controllers\CallbackController@paymentAviso');
+    Route::post('/callbacks/checkOrder', 'Magnetar\Tariffs\Controllers\CallbackController@checkOrder');
+
+    Route::get('/users/{id}/pay', function ($id) {
+        return view('magnetar_tariffs::yandex', ['id' => $id]);
+    });
+
+});
 
 Route::group(['prefix' => 'api/v1/magnetar/tariffs', 'middleware' => [config('tariffs.middleware.auth')]], function () {
 

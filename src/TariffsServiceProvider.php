@@ -43,6 +43,6 @@ class TariffsServiceProvider extends ServiceProvider
         $this->app->make('Magnetar\Tariffs\Controllers\PaymentController');
         $this->commands($this->commands);
 
-//        $this->loadViewsFrom(__DIR__.'/views', 'calculator');
+        $this->loadViewsFrom(__DIR__.'/views', 'magnetar_tariffs');
     }
 }

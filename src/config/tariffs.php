@@ -6,6 +6,6 @@ return [
         'super_admin' => 'role:777'
     ],
     'controllers' => [
-        'enable' => true
+        'enabled' => true
     ]
 ];

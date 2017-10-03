@@ -16,7 +16,7 @@ class Settings {
         $this->SECURITY_TYPE = $SECURITY_TYPE;
         $this->request_source = $request_source;
         $this->LOG_FILE = "log.txt";
-        $this->mws_cert = "mws/shop.cer";
-        $this->mws_private_key = "mws/private.key";
+        $this->mws_cert = public_path("mws/shop.cer");
+        $this->mws_private_key = public_path("mws/private.key");
     }
 }

@@ -32,7 +32,7 @@ class CardCrudController extends Controller
      * @param int $id
      * @return ResponseHelper
      */
-    public function show(Request $request, $id) {
+    public function show(Request $request, $id = null) {
 
         $out['card'] = UserCard::find($id);
 

@@ -4,6 +4,7 @@ namespace Magnetar\Tariffs\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Magnetar\Tariffs\Models\Module;
 use Magnetar\Tariffs\Models\Object;
 use Magnetar\Tariffs\ResponseHelper;
 use Magnetar\Tariffs\Services\ObjectServices;
@@ -68,11 +69,28 @@ class ObjectCrudController extends Controller
 
         if ($object->validate($request->all())) {
 
+            $req_json = json_decode($request->input('data'), true);
+
+            foreach ($req_json as $module_id => $item) {
+
+                $module = Module::find($module_id);
+                if(!$module)
+                    unset($req_json[$module_id]);
+
+                $module_settings = json_decode($module->settings, true);
+
+                if(isset($item['count']) && !isset($module_settings['count']))
+                    unset($req_json[$module_id]);
+
+            }
+
             $object->name = $request->input('name');
             $object->type_id = $request->input('type_id');
             $object->currency_id = $request->input('currency_id');
             $object->price = $request->input('price');
-            $object->data = $request->input('data');
+            $object->data = json_encode($req_json);
+
+// {"1": {"active": "true"}, "2": {"count": 50, "active": "true"}, "3": {"active": "true", "period": 10, "period_type": "day"}}
 
             $object->save();
 

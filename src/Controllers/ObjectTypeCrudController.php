@@ -50,7 +50,7 @@ class ObjectTypeCrudController extends Controller
      * @param int $id
      * @return ResponseHelper
      */
-    public function process(Request $request, $id) {
+    public function process(Request $request, $id = null) {
 
         if($id == null)
             $object_type = new ObjectType();
@@ -68,6 +68,8 @@ class ObjectTypeCrudController extends Controller
             $object_type->name = $request->input('name');
 
             $object_type->save();
+
+            return ResponseHelper::response_success("update", ['object_type' => $object_type]);
 
         } else
             return ResponseHelper::response_error($object_type->errors(), 400);

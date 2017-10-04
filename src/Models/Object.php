@@ -21,7 +21,7 @@ class Object extends Model {
     protected $rules = [
         'name' => 'required|string',
         'type_id' => 'required|integer',
-        'currency_id' => 'required|integer',
+        'currency_id' => 'integer',
         'price' => 'required|numeric',
         'data' => 'required|string',
     ];
@@ -41,6 +41,39 @@ class Object extends Model {
     public function addToUser($user_id) {
 
         foreach ($this->data as $module_key => $data) {
+
+            $module_check = Module::find($module_key);
+            if(!$module_check)
+                continue;
+
+            $check_settings = json_decode($module_check->settings, true);
+
+            if(!isset($check_settings['count']) || (isset($check_settings['count']) && $check_settings['count'] == 0)) {
+
+                $ar_ids = [$module_key];
+                if ($module_check->group > 0) {
+                    $biggest_modules = Module::where('group', $module_check->group)->where('grade', '>', $module_check->grade)->pluck('id');
+                    foreach ($biggest_modules as $biggest_module)
+                        $ar_ids[] = $biggest_module;
+                }
+
+                $user_module_check = UserObject::where('user_id', $user_id)->whereIn('module_id', $ar_ids)->count();
+                if ($user_module_check > 0)
+                    continue;
+
+            }
+// TODO: start, удаляем дубли, возможно нужно смотреть по expired_at
+            $module_check = Module::select('magnetar_tariffs_modules.settings')
+                ->leftJoin('magnetar_tariffs_user_objects', 'magnetar_tariffs_modules.id', '=', 'magnetar_tariffs_user_objects.module_id')
+                ->where('magnetar_tariffs_user_objects.user_id', $user_id)
+                ->where('magnetar_tariffs_user_objects.module_id', $module_key)
+                ->first();
+// TODO: end
+            if(isset($module_check)) {
+                $check_settings = json_decode($module_check->settings, true);
+                if(!isset($check_settings['count']) || (isset($check_settings['count']) && $check_settings['count'] == 0))
+                    continue;
+            }
 
             $user_tariff = new UserObject();
 

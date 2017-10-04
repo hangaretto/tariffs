@@ -50,7 +50,7 @@ class ModuleCrudController extends Controller
      * @param int $id
      * @return ResponseHelper
      */
-    public function process(Request $request, $id) {
+    public function process(Request $request, $id = null) {
 
         if($id == null)
             $module = new Module();
@@ -73,6 +73,8 @@ class ModuleCrudController extends Controller
             $module->currency_id = $request->input('currency_id');
 
             $module->save();
+
+            return ResponseHelper::response_success("update", ['module' => $module]);
 
         } else
             return ResponseHelper::response_error($module->errors(), 400);

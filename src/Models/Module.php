@@ -11,10 +11,22 @@ namespace Magnetar\Tariffs\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
+use Magnetar\Tariffs\Presenters\ValidatePresenter;
 
 class Module extends Model {
 
     protected $table = 'magnetar_tariffs_modules';
+
+    protected $rules = [
+        'name' => 'required|string',
+        'price' => 'required|numeric',
+        'settings' => 'required|string',
+        'group' => 'integer',
+        'grade' => 'integer',
+        'currency_id' => 'integer',
+    ];
+
+    use ValidatePresenter;
 
     /**
      * Delete smaller module of user.
@@ -60,10 +72,10 @@ class Module extends Model {
 
     }
 
-    public function getSettingsAttribute($value) {
-
-        return $value = json_decode($value, true);
-
-    }
+//    public function getSettingsAttribute($value) {
+//
+//        return json_decode($value, true);
+//
+//    }
 
 }

@@ -65,7 +65,42 @@ class UserBalanceService
      */
     public static function currentBalance($user_id) {
 
-        return UserBalance::where('user_id', $user_id)->sum('amount');
+        return floatval(UserBalance::where('user_id', $user_id)->sum('amount'));
+
+    }
+
+    /**
+     * Return last transaction code.
+     *
+     * @param int $user_id
+     * @return string
+     */
+    public static function getLastCode($user_id) {
+
+        return null;
+        return '2000001627031';
+
+    }
+    
+    /**
+     * Buy balance, and return current sum.
+     *
+     * @param int $user_id
+     * @param float $amount
+     * @return float
+     */
+    public static function buyBalance($user_id, $amount) {
+
+        $tx_code = UserBalanceService::getLastCode($user_id);
+
+        if($tx_code != null) {
+
+            $mws = new \Magnetar\Tariffs\Services\Yandex\MWS(new \Magnetar\Tariffs\Services\Yandex\Settings());
+            $mws->repeatCardPayment($tx_code, $amount);
+
+        }
+
+        return UserBalanceService::currentBalance($user_id);
 
     }
 }

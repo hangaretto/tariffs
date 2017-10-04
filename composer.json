@@ -1,12 +1,10 @@
 {
     "name": "magnetar/tariffs",
     "autoload": {
-        "classmap": [
-            "database"
-        ],
         "psr-4": {
-            "App\\": "app/",
             "Magnetar\\Tariffs\\": "src"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

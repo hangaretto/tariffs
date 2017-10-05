@@ -1,0 +1,13 @@
+{
+    "name": "magnetar/tariffs",
+    "autoload": {
+        "psr-4": {
+            "Magnetar\\Tariffs\\": "src"
+        }
+    },
+    "require": {
+        "magnetar/mailing": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

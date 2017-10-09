@@ -25,7 +25,7 @@ class UserBalance extends Model {
      */
     public function sendNotification() {
 
-        if(config('magnetar.tariffs.notifications.enabled') != true)
+        if(config('magnetar.tariffs.billing.notifications') != true)
             return false;
 
         $user = User::find($this->user_id);
@@ -34,10 +34,10 @@ class UserBalance extends Model {
             return false;
 
         $data['to'] = $user->email;
-        $data['subject'] = config('magnetar.tariffs.notifications.subject');
+        $data['subject'] = config('magnetar.tariffs.billing.subject');
         $data['html'] = '<p>'.$this->info.'</p>';
 
-        dispath(new MailingJob('email', $data));
+        dispatch(new MailingJob('email', $data));
 
         return true;
 

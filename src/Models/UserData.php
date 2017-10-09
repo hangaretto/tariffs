@@ -12,8 +12,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
 
-class UserCard extends Model {
+class UserData extends Model {
 
-    protected $table = 'magnetar_tariffs_user_cards';
+    protected $table = 'magnetar_tariffs_user_data';
+
+    public function getDataAttribute($value)
+    {
+        return json_decode($value, true);
+    }
 
 }

@@ -9,7 +9,6 @@ Route::group(['prefix' => 'api/v1/magnetar/tariffs'], function () {
         return view('magnetar_tariffs::yandex', ['id' => $id]);
     });
 
-
     Route::group(['middleware' => [config('magnetar.tariffs.middleware.auth')]], function () {
 
     //    Route::get('users/{id}', 'Magnetar\Tariffs\Controllers\PaymentController@allInfo');
@@ -30,18 +29,19 @@ Route::group(['prefix' => 'api/v1/magnetar/tariffs'], function () {
 
         });
 
-        Route::group(['prefix' => 'cards'], function () {
+        Route::group(['prefix' => 'user_objects'], function () {
 
             Route::group(['middleware' => [config('magnetar.tariffs.middleware.super_admin')]], function () {
 
-                Route::post('/', 'Magnetar\Tariffs\Controllers\CardCrudController@process');
-                Route::put('/{id}', 'Magnetar\Tariffs\Controllers\CardCrudController@process')->where('id', '[0-9]+');
-                Route::delete('/{id}', 'Magnetar\Tariffs\Controllers\CardCrudController@destroy')->where('id', '[0-9]+');
+                Route::get('/admin', ['as' => 'user_objects.list.admin', 'uses' => 'Magnetar\Tariffs\Controllers\UserObjectCrudController@index']);
+                Route::post('/', 'Magnetar\Tariffs\Controllers\UserObjectCrudController@process');
+                Route::put('/{id}', 'Magnetar\Tariffs\Controllers\UserObjectCrudController@process')->where('id', '[0-9]+');
+                Route::delete('/{id}', 'Magnetar\Tariffs\Controllers\UserObjectCrudController@destroy')->where('id', '[0-9]+');
 
             });
 
-            Route::get('/', 'Magnetar\Tariffs\Controllers\CardCrudController@index');
-            Route::get('/{id}', 'Magnetar\Tariffs\Controllers\CardCrudController@show')->where('id', '[0-9]+');
+            Route::get('/', ['as' => 'user_objects.list.public', 'uses' => 'Magnetar\Tariffs\Controllers\UserObjectCrudController@index']);
+            Route::get('/{id}', 'Magnetar\Tariffs\Controllers\UserObjectCrudController@show')->where('id', '[0-9]+');
 
         });
 

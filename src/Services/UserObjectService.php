@@ -2,7 +2,12 @@
 
 namespace Magnetar\Tariffs\Services;
 
+use Magnetar\Tariffs\Models\Module;
+use Magnetar\Tariffs\Models\Object;
 use Magnetar\Tariffs\Models\UserObject;
+use Magnetar\Tariffs\References\UserBalanceReference;
+use Carbon\Carbon;
+use DB;
 
 class UserObjectService
 {
@@ -30,10 +35,10 @@ class UserObjectService
 
             $data = $user_tariff->data;
 
-            if(!isset($data['count']))
+            if (!isset($data['count']))
                 continue;
 
-            if($data['count'] > 1 || ($data['count'] == 1 && ($user_tariff->object_id != null))) {
+            if ($data['count'] > 1 || ($data['count'] == 1 && ($user_tariff->object_id != null))) {
 
                 $data['count'] -= 1;
                 $user_tariff->data = json_encode($data);
@@ -42,10 +47,16 @@ class UserObjectService
                 $success_flag = true;
                 break;
 
-            } else if($data['count'] == 1) {
+            } else if ($data['count'] == 1) {
 
-                if($user_tariff->object_id == null && $user_tariff->module_id == null)
-                    $user_tariff->delete();
+//                if($user_tariff->object_id == null && $user_tariff->module_id == null)
+//                    $user_tariff->delete();
+//                else {
+                $data['count'] -= 1;
+                $data['active'] = false;
+                $user_tariff->data = json_encode($data);
+                $user_tariff->save();
+//                }
 
                 $success_flag = true;
                 break;
@@ -61,26 +72,28 @@ class UserObjectService
     /**
      * Preparing objects data.
      *
-     * @param array $user_tariffs
+     * @param int $user_id
      * @return array
      */
-    public static function allInfoProcess($user_tariffs) {
+    public static function allInfo($user_id) {
+
+        $user_objects = UserObject::where('user_id', $user_id)->get();
 
         $ar_out = [];
-        foreach ($user_tariffs as $item) {
+        foreach ($user_objects as $item) {
 
-            if($item->module_id != null)
-                $ar_out[$item->module_id] = $item->data;
-            else {
+            if (!isset($ar_out[$item->module_id])) {
+                $ar_insert = [];
+                foreach ($item->data as $k => $v)
+                    if(in_array($k, ['active', 'count']))
+                        $ar_insert[$k] = $v;
+                $ar_out[$item->module_id] = $ar_insert;
+            } else if (isset($item->data['count'])) {
 
-                foreach ($item->data as $k_d => $v_d) {
+                if (!isset($ar_out[$item->module_id]['count']))
+                    $ar_out[$item->module_id]['count'] = 0;
 
-                    if(isset($ar_out[$k_d]))
-                        $ar_out[$k_d]['count'] += $v_d['count'];
-                    else
-                        $ar_out[$k_d]['count'] = $v_d['count'];
-
-                }
+                $ar_out[$item->module_id]['count'] += $item->data['count'];
 
             }
 
@@ -116,6 +129,186 @@ class UserObjectService
                 return true;
 
         return false;
+
+    }
+
+    /**
+     * Check expired object, buy if expired and enough money.
+     *
+     */
+    public static function checkExpired() {
+
+        $user_objects = UserObject::where(function ($query) {
+            $query->whereNotNull('object_id')
+                ->orWhereNotNull('module_id');
+        })->where(function ($query) {
+            $query->where(DB::raw("paid_at + INTERVAL '1' DAY"), '<', Carbon::now())
+                ->orWhere('expired_at', '<', Carbon::now());
+        })
+        ->get();
+
+        $now = Carbon::now();
+
+        $ar_objects = $ar_prices = $ar_objects_ids = [];
+        foreach ($user_objects as $object) {
+
+            $ar_objects[$object->user_id][$object->object_id][] = $object;
+
+            $price_insert = 0;
+            if(new Carbon($object->expired_at) > $now || $object->expired_at == null)
+                $price_insert += $object->price;
+
+            $data = $object->data;
+
+            if (isset($data['refresh_period']) && isset($data['refresh_in']) && new Carbon($data['refresh_in']) < $now && isset($data['base_price']))
+                $price_insert += $data['base_price'];
+
+            if(!isset($ar_prices[$object->user_id][$object->object_id]))
+                $ar_prices[$object->user_id][$object->object_id] = 0;
+
+            $ar_prices[$object->user_id][$object->object_id] += $price_insert;
+
+            if (!in_array($object->object_id, $ar_objects_ids))
+                $ar_objects_ids[] = $object->object_id;
+
+        }
+
+        if(count($ar_objects_ids) > 0)
+            $objects = Object::whereIn('id', $ar_objects_ids)->get()->keyBy('id');
+
+        foreach ($ar_prices as $user_id => $user_prices) {
+
+            $necessary_sum = array_sum($user_prices);
+            $user_balance = UserBalanceService::currentBalance($user_id);
+
+            if ($necessary_sum > $user_balance)
+                $user_balance = UserBalanceService::buyBalance($user_id, $necessary_sum - $user_balance);
+
+            foreach ($user_prices as $object_id => $price) {
+
+                if ($necessary_sum <= $user_balance) {
+
+                    DB::beginTransaction();
+
+                    $daily_price = 0;
+                    foreach ($ar_objects[$user_id][$object_id] as &$user_object) {
+
+//                        dd(new Carbon($object->expired_at));
+//dd($user_object);
+                        $module = Module::find($user_object->module_id);
+
+                        if (new Carbon($user_object->expired_at) < $now) {
+
+                            if(!$module || $module->price == null)
+                                $user_object->delete();
+                            else {
+
+                                $user_object->price = current($module->price)['price'];
+                                $user_object->expired_at = null;
+                                $user_object->object_id = null;
+
+                                $user_object->save();
+
+                            }
+
+                        }
+
+                        $pay_date = new Carbon($user_object->paid_at);
+                        $pay_date->addDay();
+
+                        if ($pay_date < $now) {
+
+                            $daily_price += $user_object->price;
+                            $user_object->paid_at = Carbon::now();
+                            $user_object->save();
+
+                        }
+
+                        $data = $user_object['data'];
+                        if (isset($data['refresh_period']) && isset($data['refresh_in']) && new Carbon($data['refresh_in']) < $now && isset($data['base_price'])) {
+
+                            $refresh_in = Carbon::now();
+                            $data['refresh_in'] = $refresh_in->add(new \DateInterval($data['refresh_period']))->toIso8601String();
+
+                            $user_object->data = json_encode($data);
+                            $user_object->save();
+                            UserBalanceService::create($user_id, UserBalanceReference::BUY, $data['base_price'], ['name' => $module->name]);
+
+                        }
+
+                    }
+
+                    if($daily_price > 0)
+                        UserBalanceService::create($user_id, UserBalanceReference::DAILY_BUY, $daily_price);
+
+                    DB::commit();
+
+                } else {
+
+                    foreach ($ar_objects[$user_id][$object_id] as &$user_object)
+                        $user_object->delete();
+
+                }
+
+                unset($user_object);
+
+            }
+
+        }
+
+    }
+    
+    /**
+     *
+     *
+     */
+    public static function sendNotifications() {
+    
+        // если меньше 7 дней
+        // если не хвататет денег,
+    
+    }
+
+    /**
+     * Calculate expired_at field.
+     *
+     * @param array $periods
+     * @param string $request_period
+     * @throws string
+     */
+    public static function calculateExpired_at($periods, $request_period) {
+
+        if($periods != null) {
+
+            if(!isset($request_period))
+                throw new \Exception('not.found.period');
+
+            $check_period = false;
+            foreach ($periods as $period => $val) {
+
+                if($request_period == $period) {
+                    $check_period = true;
+                    break;
+                }
+
+            }
+
+            if($check_period == false)
+                throw new \Exception('not.valid.period');
+
+            $period = $request_period;
+
+        } else {
+
+            if(isset($request_period))
+                $period = $request_period;
+            else
+                $period = 'P0Y';
+
+        }
+
+        $date = new Carbon();
+        return $date->add(new \DateInterval($period));
 
     }
 

@@ -70,7 +70,6 @@ class ModuleCrudController extends Controller
             $module->name = $request->input('name');
             $module->settings = $request->input('settings');
             $module->price = $request->input('price');
-            $module->currency_id = $request->input('currency_id');
 
             $module->save();
 

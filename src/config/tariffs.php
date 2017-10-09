@@ -3,23 +3,36 @@
 return [
     'middleware' => [
         'auth' => 'auth:api',
-        'super_admin' => 'role:777'
+        'super_admin' => 'auth:api'
     ],
     'controllers' => [
         'enabled' => true
     ],
-    'notifications' => [
-        'enabled' => true,
+    'billing' => [
+        'notifications' => true,
         'subject' => 'Уведомление с сайта - PiperCat',
         'templates' => [
             'buy' => [
                 'template' => 'Покупка объекта - ":name", совершена успешно.',
-                'action' => '-'
+                'action' => '-',
+                'enabled' => true,
+                'notification' => true,
+            ],
+            'daily_buy' => [
+                'template' => 'Ежедневное списание.',
+                'action' => '-',
+                'enabled' => true,
+                'notification' => true,
             ],
             'add_balance' => [
                 'template' => 'Пополнение баланса.',
-                'action' => '+'
+                'action' => '+',
+                'enabled' => true,
+                'notification' => true,
             ],
+
+            // ниже можно добавить свои шаблоны
+
         ]
     ]
 ];

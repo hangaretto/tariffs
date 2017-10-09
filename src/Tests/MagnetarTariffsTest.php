@@ -9,7 +9,7 @@ use DB;
 class MagnetarTariffsTest extends TestCase
 {
     private $headers = [
-        'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjdhNTE0ZTNmNzE4NDFiZDcwNmRjN2RlNzgwYWI5MjBkMWI5YjNkODk0MTc5YWIyNDE5ZjRmZjEzZDQxMDUxNWE1NzhlZGEyOWUzZjgyNzEyIn0.eyJhdWQiOiIyIiwianRpIjoiN2E1MTRlM2Y3MTg0MWJkNzA2ZGM3ZGU3ODBhYjkyMGQxYjliM2Q4OTQxNzlhYjI0MTlmNGZmMTNkNDEwNTE1YTU3OGVkYTI5ZTNmODI3MTIiLCJpYXQiOjE1MDY2NzA3MTksIm5iZiI6MTUwNjY3MDcxOSwiZXhwIjoxNTM4MjA2NzE4LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.q7s2jP105U502-hV1gVnYT6tB7PCbHjb-s1rLbL98Rqm4Lf1VhDbKJRZgtgpLwuzCyXuyjVeXfuCJlzYjtlT3AL9Rq54GuoVjO0hena3OL-b39Lyi4_VdTrgaa0W9YAZaoNV5t75Q42whVQz2KFjKvg4hf9_VItzTnsKH8I8yWHSClxzje1ZXRjuFPBYTCGXxhiCmz_oD_4rS8pz8TMQW2L6319CIAohLvvNZe8XREViCVgB7secbNikEAMWQOkWZU1Hthi_afHwHX15zcpJcdKVumLgnqpmxBUN1uk7m3AnfQHfcNkZipcZIxroxpEzCDTMd1tK-cY1zE1dNEfRVmm-ugu9UP9tx0CxYDj-KvzON2Ac5J2IC4DPxC50Byd3MmpG_ROhmF7YOMrW09IJ5Zenr1QZ_SBO3oYT0dACCcK6bi8c9IknvjBrdNj5ig20-y2IO9nkN7BJHpvm6cfswYVT3jz0r-LXlVs2vJ8xTcUJOoOHGYWRlIQHDbBEgms6EWJByQeOGPdvDPLfQ58WyMLK7y7AxnbwKx_4fAl0Cn2ft1RdTdq0S6twMYH71b1U3Gh7JZ_bffO4rBmrqg2hqXB29F19BtOQgbq8cWu8lwterhcSZK1P22kPVarSYLo2oiIwKb7PC8rOMSxTcS_4UZG0S586AZSTLxm2-pSO3j4',
+        'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjQ5MGE3NDMyMjYzY2ViZGY2ZGVhNDFkYTI0NWIzMWI2Mzc5M2FlM2FjMjRkZWQ3N2IyNDU3ZGIxOTMwYzc0MjVlZGM4YzczNjAwNzVhOGRlIn0.eyJhdWQiOiIyIiwianRpIjoiNDkwYTc0MzIyNjNjZWJkZjZkZWE0MWRhMjQ1YjMxYjYzNzkzYWUzYWMyNGRlZDc3YjI0NTdkYjE5MzBjNzQyNWVkYzhjNzM2MDA3NWE4ZGUiLCJpYXQiOjE1MDcyNjc4MzgsIm5iZiI6MTUwNzI2NzgzOCwiZXhwIjoxNTM4ODAzODM4LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.lZ3wQc4810vqFEc7dMxRmvyk0jvB6a1ppFEAiQdbQe3jm1k3CNp_i7_m81MryvNMbuP689K7kvbfuqoZrzHF_fRo_G1GZmptCXoFMSiKWmCu-uN2JKH7D2w4BiABTHlxQaubYwZVmMbhOH9gvxaEdHvluIAd88u5vw3F8AIukdKVx93T9EYcilw6coQBWeqHolFBJrORwhQ89N2BRFKX5b6p2EOFnVwzUK45Q8YE-VpD3ADddPNlmQH2Vag3PEK0dr-gktSw197O-fQ_zpddnEWtm6DRuX2rhyAA7bsAP8k1W3ZKNdjwhfao2Z_E2NB0d-FXgXS3_iHYU2SdMfPb7tHRcaWd8WUMxjGDUtCfgj-4b5dp_2D1fFdqBJyLUiPpmob90QYBbYljLCYKtbX1HQg-aKekg7ZYHGKtg-Hy8bkxjqr2YPwErwX1B0VXM-KUCtIMNiZKj0t3viRzZ8Fq04_zjkoffnLtv-0lZndy28HrVjpQ-5B3IAPoZOtPodIa7gLJzjLP1obDzBclyEduQZo99iyMc2dkd1g-rbhb1NLYcB3N2RfiSxu0zdyIJ6mN1gl6OCkfFvMbv_-cXEOlimv7BAVncYlt3OxJopDDHEjosgvDsXqEDv5yVsy8rrL0m3mcLwLt5neu7dk2vB8phnxHxJCX-h-nk1LSwNy-FsM',
     ];
 
     public function testObjectCRUD()
@@ -27,9 +27,8 @@ class MagnetarTariffsTest extends TestCase
         $response = $this->withHeaders($this->headers)->json('POST', 'api/v1/magnetar/tariffs/tariffs', [
             'name' => 'Test',
             'type_id' => 1,
-//            'currency_id' => 1,
-            'price' => 100,
-            'data' => '{"1":{"active":"true"},"2":{"count":50,"active":"true"},"3":{"period":10,"period_type":"day","active":"true"}}'
+            'periods' => '{"P0Y": {"active": true}, "P0Y1M": {"active": true}, "P0Y2M": {"active": true}}',
+            'data' => '{"1": {"active": true}, "2": {"count": 50, "active": true, "base_price": 100, "refresh_period": "P1M"}, "3": {"price": {"P0Y": {"price": 25}, "P0Y1M": {"price": 20}, "P0Y2M": {"price": 15}}, "active": true}}'
         ]);
         $response
             ->assertStatus(200)
@@ -46,9 +45,8 @@ class MagnetarTariffsTest extends TestCase
             $response = $this->withHeaders($this->headers)->json('PUT', 'api/v1/magnetar/tariffs/tariffs/' . $id, [
                 'name' => 'Test',
                 'type_id' => 1,
-//                'currency_id' => 1,
-                'price' => 100,
-                'data' => '{"1":{"active":"true"},"2":{"count":50,"active":"true"},"3":{"period":10,"period_type":"day","active":"true"}}'
+                'periods' => '{"P0Y": {"active": true}, "P0Y1M": {"active": true}, "P0Y2M": {"active": true}}',
+                'data' => '{"1": {"active": true}, "2": {"count": 50, "active": true, "base_price": 100, "refresh_period": "P1M"}, "3": {"price": {"P0Y": {"price": 25}, "P0Y1M": {"price": 20}, "P0Y2M": {"price": 15}}, "active": true}}'
             ]);
             $response
                 ->assertStatus(200)
@@ -63,7 +61,9 @@ class MagnetarTariffsTest extends TestCase
                     'status' => 'success',
                 ]);
 
-            $response = $this->withHeaders($this->headers)->json('PUT', 'api/v1/magnetar/tariffs/tariffs/' . $id . '/buy', []);
+            $response = $this->withHeaders($this->headers)->json('PUT', 'api/v1/magnetar/tariffs/tariffs/' . $id . '/buy', [
+                'period' => 'P0Y1M'
+            ]);
             $response
                 ->assertStatus(200)
                 ->assertJson([
@@ -150,8 +150,8 @@ class MagnetarTariffsTest extends TestCase
 
         $response = $this->withHeaders($this->headers)->json('POST', 'api/v1/magnetar/tariffs/modules', [
             'name' => 'Test',
-            'settings' => '{"count": 1, "active": 1}',
-            'price' => 100
+            'settings' => '{"active": true}',
+            'price' => '{"P0Y": {"price": 25}, "P0Y1M": {"price": 20}, "P0Y2M": {"price": 15}, "P0Y3M": {"price": 12}}',
         ]);
         $response
             ->assertStatus(200)
@@ -167,10 +167,8 @@ class MagnetarTariffsTest extends TestCase
 
             $response = $this->withHeaders($this->headers)->json('PUT', 'api/v1/magnetar/tariffs/modules/' . $id, [
                 'name' => 'Test',
-                'settings' => '{"count": 1, "active": 1}',
-                'price' => 100,
-                'grade' => 1,
-                'group' => 1
+                'settings' => '{"active": true}',
+                'price' => '{"P0Y": {"price": 25}, "P0Y1M": {"price": 20}, "P0Y2M": {"price": 15}, "P0Y3M": {"price": 12}}',
             ]);
             $response
                 ->assertStatus(200)
@@ -179,6 +177,15 @@ class MagnetarTariffsTest extends TestCase
                 ]);
 
             $response = $this->withHeaders($this->headers)->json('GET', 'api/v1/magnetar/tariffs/modules/' . $id, []);
+            $response
+                ->assertStatus(200)
+                ->assertJson([
+                    'status' => 'success',
+                ]);
+
+            $response = $this->withHeaders($this->headers)->json('PUT', 'api/v1/magnetar/tariffs/modules/' . $id . '/buy', [
+                'period' => 'P0Y1M'
+            ]);
             $response
                 ->assertStatus(200)
                 ->assertJson([

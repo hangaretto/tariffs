@@ -38,7 +38,7 @@ class TariffsServiceProvider extends ServiceProvider
     {
         $this->app->make('Magnetar\Tariffs\Controllers\ObjectCrudController');
         $this->app->make('Magnetar\Tariffs\Controllers\ModuleCrudController');
-        $this->app->make('Magnetar\Tariffs\Controllers\CardCrudController');
+        $this->app->make('Magnetar\Tariffs\Controllers\UserObjectCrudController');
         $this->app->make('Magnetar\Tariffs\Controllers\ObjectTypeCrudController');
         $this->app->make('Magnetar\Tariffs\Controllers\PaymentController');
         $this->commands($this->commands);

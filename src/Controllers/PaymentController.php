@@ -20,11 +20,12 @@ class PaymentController extends Controller
     /**
      * Buy object.
      *
+     * @param Request $request
      * @param string $type
      * @param int $id
      * @return ResponseHelper
      */
-    public function buyObject($type, $id) {
+    public function buyObject(Request $request, $type, $id) { // TODO: посмотреть TODO
 
         $user_id = \Auth::guard('api')->user()->id;
 
@@ -47,8 +48,7 @@ class PaymentController extends Controller
 
         try {
 
-            $object->addToUser($user_id);
-            UserBalanceService::create($user_id, UserBalanceReference::BUY, $object->price, ['name' => $object->name]);
+            $object->addToUser($user_id, $request->input('period', null));
 
             DB::commit();
             return ResponseHelper::response_success('successful');
@@ -65,10 +65,11 @@ class PaymentController extends Controller
     /**
      * Buy module.
      *
+     * @param Request $request
      * @param int $id
      * @return ResponseHelper
      */
-    public function buyModule($id) {
+    public function buyModule(Request $request, $id) {
 
         $user_id = \Auth::guard('api')->user()->id;
 
@@ -89,14 +90,13 @@ class PaymentController extends Controller
 
         $user_module_check = UserObject::where('user_id', $user_id)->whereIn('module_id', $ar_ids)->count();
         if ($user_module_check > 0)
-            return ResponseHelper::response_error('tariff.exists', 403);
+            return ResponseHelper::response_error('module.exists', 403);
 
         DB::beginTransaction();
 
         try {
 
-            $module->addToUser($user_id);
-            UserBalanceService::create($user_id, UserBalanceReference::BUY, $module->price, ['name' => $module->name]);
+            $module->addToUser($user_id, $request->input('period', null));
 
             DB::commit();
             return ResponseHelper::response_success('successful');
@@ -121,17 +121,15 @@ class PaymentController extends Controller
         if($user_id == null)
             $user_id = \Auth::guard('api')->user()->id;
 
-        $user_tariffs = UserObject::where('user_id', $user_id)->get();
-
         return ResponseHelper::response_success('successful', [
-            'billing' => UserObjectService::allInfoProcess($user_tariffs),
+            'billing' => UserObjectService::allInfo($user_id),
             'balance' => UserBalanceService::currentBalance($user_id)
         ]);
 
     }
 
     /**
-     * Decrease value test
+     * Decrease value test.
      *
      * @return ResponseHelper
      */

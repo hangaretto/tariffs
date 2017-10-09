@@ -12,6 +12,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
 use Magnetar\Tariffs\Presenters\ValidatePresenter;
+use Magnetar\Tariffs\References\UserBalanceReference;
+use Magnetar\Tariffs\Services\UserBalanceService;
+use Magnetar\Tariffs\Services\UserObjectService;
+use Carbon\Carbon;
+use DB;
 
 class Module extends Model {
 
@@ -19,14 +24,23 @@ class Module extends Model {
 
     protected $rules = [
         'name' => 'required|string',
-        'price' => 'required|numeric',
-        'settings' => 'required|string',
+        'price' => 'required|json',
+        'settings' => 'required|json',
         'group' => 'integer',
         'grade' => 'integer',
-        'currency_id' => 'integer',
     ];
 
     use ValidatePresenter;
+
+    public function getPriceAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    public function getSettingsAttribute($value)
+    {
+        return json_decode($value, true);
+    }
 
     /**
      * Delete smaller module of user.
@@ -56,19 +70,40 @@ class Module extends Model {
      * Add module to user.
      *
      * @param int $user_id
+     * @throws
      */
-    public function addToUser($user_id) {
+    public function addToUser($user_id, $period) {
 
-        $user_tariff = new UserObject();
+        if($this->price == null)
+            throw new \Exception('access.denied');
 
-        $user_tariff->module_id = $this->id;
-        $user_tariff->user_id = $user_id;
-        $user_tariff->price = $this->price;
-        $user_tariff->data = json_encode($this->settings);
+        $expired_at = UserObjectService::calculateExpired_at($this->price, $period);
+
+        $user_object = new UserObject();
+
+        $user_object->price = current($this->price)['price'];
+        foreach ($this->price as $interval => $item) {
+            $date = new Carbon();
+            $date_check = $date->add(new \DateInterval($interval));
+
+            if($date_check <= $this->expired_at)
+                $user_object->price = $item['price'];
+            else
+                break;
+
+        }
+
+        $user_object->module_id = $this->id;
+        $user_object->user_id = $user_id;
+        $user_object->data = json_encode($this->settings);
+        $user_object->expired_at = $expired_at;
+        $user_object->paid_at = Carbon::now();
 
         $this->deleteSmallerTariffs($user_id);
 
-        $user_tariff->save();
+        $user_object->save();
+
+        UserBalanceService::create($user_id, UserBalanceReference::DAILY_BUY, $user_object->price);
 
     }
 

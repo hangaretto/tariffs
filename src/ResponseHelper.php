@@ -14,7 +14,13 @@ class ResponseHelper
             "not.found" => "Not found",
             "update" => "Successful create/update",
             "access.denied" => "Access Denied",
-            "tariff.exists" => "Tariff already exist"
+            "tariff.exists" => "Tariff already exist",
+            "module.exists" => "Module already exist",
+
+            "not.found.period" => "Not found period variable",
+            "not.valid.period" => "Not valid period",
+
+            "transaction_template.disabled" => "Template is disabled",
         ];
 
         if (array_key_exists($hash, $message_array))

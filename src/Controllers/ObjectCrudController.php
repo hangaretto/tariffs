@@ -77,7 +77,7 @@ class ObjectCrudController extends Controller
                 if(!$module)
                     unset($req_json[$module_id]);
 
-                $module_settings = json_decode($module->settings, true);
+                $module_settings = $module->settings;
 
                 if(isset($item['count']) && !isset($module_settings['count']))
                     unset($req_json[$module_id]);
@@ -86,8 +86,7 @@ class ObjectCrudController extends Controller
 
             $object->name = $request->input('name');
             $object->type_id = $request->input('type_id');
-            $object->currency_id = $request->input('currency_id');
-            $object->price = $request->input('price');
+            $object->periods = $request->input('periods');
             $object->data = json_encode($req_json);
 
 // {"1": {"active": "true"}, "2": {"count": 50, "active": "true"}, "3": {"active": "true", "period": 10, "period_type": "day"}}

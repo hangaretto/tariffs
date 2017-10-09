@@ -9,6 +9,7 @@ use DateTime;
 use Magnetar\Mailing\Jobs\MailingJob;
 use Magnetar\Tariffs\References\UserBalanceReference;
 use Magnetar\Tariffs\Services\UserBalanceService;
+use Magnetar\Tariffs\Services\UserDataServices;
 
 class YaMoneyCommonHttpProtocol
 {
@@ -159,6 +160,7 @@ class YaMoneyCommonHttpProtocol
     }
     private function save() {
 
+        UserDataServices::setData($this->request['customerNumber'], ['last_code' => $this->request['invoiceId']]);
         UserBalanceService::create($this->request['customerNumber'], UserBalanceReference::ADD_BALANCE, floatval($this->request['orderSumAmount']));
 
     }

@@ -11,6 +11,8 @@ namespace Magnetar\Tariffs\Services;
 use Magnetar\Tariffs\Models\UserBalance;
 use Magnetar\Tariffs\NumericHelper;
 use Magnetar\Tariffs\References\UserBalanceReference;
+use Magnetar\Tariffs\Services\Yandex\MWS;
+use Magnetar\Tariffs\Services\Yandex\Settings;
 
 class UserBalanceService
 {
@@ -31,10 +33,13 @@ class UserBalanceService
 //        if(array_key_exists($action, UserBalanceReference::INFO_TEMPLATES) == false)
 //            throw new \Exception('not.found.transaction_template');
 
-        if(config('magnetar.tariffs.notifications.templates.'.$action) == null)
+        if(config('magnetar.tariffs.billing.templates.'.$action) == null)
             throw new \Exception('not.found.transaction_template');
 
-        $reference = config('magnetar.tariffs.notifications.templates.'.$action);
+        $reference = config('magnetar.tariffs.billing.templates.'.$action);
+
+        if($reference['enabled'] != true)
+            throw new \Exception('transaction_template.disabled');
 
         $template = $reference['template'];
         foreach ($info as $key => $item)
@@ -55,7 +60,9 @@ class UserBalanceService
         $user_balance->info = $template;
         $user_balance->user_id = $user_id;
         $user_balance->save();
-        $user_balance->sendNotification();
+
+        if($reference['notification'] == true)
+            $user_balance->sendNotification();
 
         return $user_balance->id;
 
@@ -74,19 +81,6 @@ class UserBalanceService
     }
 
     /**
-     * Return last transaction code.
-     *
-     * @param int $user_id
-     * @return string
-     */
-    public static function getLastCode($user_id) {
-
-        return null;
-        return '2000001627031';
-
-    }
-    
-    /**
      * Buy balance, and return current sum.
      *
      * @param int $user_id
@@ -95,11 +89,11 @@ class UserBalanceService
      */
     public static function buyBalance($user_id, $amount) {
 
-        $tx_code = UserBalanceService::getLastCode($user_id);
+        $tx_code = UserDataServices::getData($user_id, 'last_code');
 
         if($tx_code != null) {
 
-            $mws = new \Magnetar\Tariffs\Services\Yandex\MWS(new \Magnetar\Tariffs\Services\Yandex\Settings());
+            $mws = new MWS(new Settings());
             $mws->repeatCardPayment($tx_code, $amount);
 
         }

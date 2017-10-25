@@ -61,16 +61,23 @@ class Object extends Model {
 
             if(!isset($check_settings['count']) || (isset($check_settings['count']) && $check_settings['count'] == 0)) {
 
-                $ar_ids = [$module_key];
+                $user_module_check = UserObject::where('user_id', $user_id)->where('module_id', $module_key)->first();
+
+                if(isset($user_module_check))
+                    $user_module_check->delete();
+
+                $ar_ids = [];
                 if ($module_check->group > 0) {
                     $biggest_modules = Module::where('group', $module_check->group)->where('grade', '>', $module_check->grade)->pluck('id');
                     foreach ($biggest_modules as $biggest_module)
                         $ar_ids[] = $biggest_module;
                 }
 
-                $user_module_check = UserObject::where('user_id', $user_id)->whereIn('module_id', $ar_ids)->count();
-                if ($user_module_check > 0)
-                    continue;
+                if(count($ar_ids) > 0) {
+                    $user_biggest_module_check = UserObject::where('user_id', $user_id)->whereIn('module_id', $ar_ids)->get();
+                    if ($user_biggest_module_check > 0)
+                        continue;
+                }
 
             }
 // TODO: start, удаляем дубли, возможно нужно смотреть по expired_at
@@ -107,7 +114,6 @@ class Object extends Model {
 
             $insert_data = ['active' => true];
 
-            $user_tariff->object_id = $this->id;
             $user_tariff->user_id = $user_id;
 
             $module = Module::find($module_key);
@@ -116,6 +122,9 @@ class Object extends Model {
                 continue;
 
             $setting_arr = $module->settings;
+
+            if(!isset($setting_arr['count']))
+                $user_tariff->object_id = $this->id;
 
             if(isset($setting_arr['count']) && $setting_arr['count'] == 1 && isset($data['count'])) {
 

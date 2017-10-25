@@ -29,4 +29,16 @@ class UserObject extends Model {
 
     }
 
+    /**
+     * Scope lj objects.
+     *
+     * @param object $query
+     * @return object $query
+     */
+    public function scopeObjects($query) {
+
+        return $query->leftJoin('magnetar_tariffs_objects', 'magnetar_tariffs_objects.id', '=', 'magnetar_tariffs_user_objects.object_id');
+
+    }
+
 }

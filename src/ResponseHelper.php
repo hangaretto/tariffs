@@ -19,6 +19,7 @@ class ResponseHelper
 
             "not.found.period" => "Not found period variable",
             "not.valid.period" => "Not valid period",
+            "not.found.transaction_template" => "Transaction template is not found",
 
             "transaction_template.disabled" => "Template is disabled",
         ];

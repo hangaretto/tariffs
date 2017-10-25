@@ -2,9 +2,11 @@
 
 namespace Magnetar\Tariffs\Services;
 
+use Magnetar\Log\Services\LogServices;
 use Magnetar\Tariffs\Models\Module;
 use Magnetar\Tariffs\Models\Object;
 use Magnetar\Tariffs\Models\UserObject;
+use Magnetar\Tariffs\NumericHelper;
 use Magnetar\Tariffs\References\UserBalanceReference;
 use Carbon\Carbon;
 use DB;
@@ -48,19 +50,9 @@ class UserObjectService
                 break;
 
             } else if ($data['count'] == 1) {
-
-//                if($user_tariff->object_id == null && $user_tariff->module_id == null)
-//                    $user_tariff->delete();
-//                else {
-                $data['count'] -= 1;
-                $data['active'] = false;
-                $user_tariff->data = json_encode($data);
-                $user_tariff->save();
-//                }
-
+                $user_tariff->delete();
                 $success_flag = true;
                 break;
-
             }
 
         }
@@ -254,19 +246,93 @@ class UserObjectService
 
             }
 
+            if($necessary_sum > $user_balance)
+                LogServices::send('user_notification', ['text' => 'Платные услуги отключены, из-за отсутсвия баланса.', 'user_id' => $user_id]);
+
         }
 
     }
     
     /**
-     *
+     * Send notification to user, if isn't enough balance.
      *
      */
     public static function sendNotifications() {
-    
-        // если меньше 7 дней
-        // если не хвататет денег,
-    
+
+        $user_objects = UserObject::get();
+
+        $now = Carbon::now();
+
+        $days_count = 3;
+
+        $ar_prices = [];
+        foreach ($user_objects as $object) {
+
+            for($i = 1; $i <= $days_count; $i++)
+                $price_insert[$i] = 0;
+
+            if(new Carbon($object->expired_at) > $now || $object->expired_at == null) {
+
+                for($i = 1; $i <= $days_count; $i++)
+                    $price_insert[$i] += $object->price;
+
+            }
+
+            $data = $object->data;
+
+            if (isset($data['refresh_period']) && isset($data['refresh_in']) && isset($data['base_price'])) {
+
+                $refresh_in = new Carbon($data['refresh_in']);
+
+                for($i = 1; $i <= $days_count; $i++) {
+
+                    $refresh_current = clone $refresh_in;
+
+                    while (true) {
+                        if ($refresh_current < Carbon::now()->addDays($i - 1))
+                            $refresh_current->add(new \DateInterval($data['refresh_period']));
+                        else
+                            break;
+                    }
+
+
+                    if (Carbon::now()->addDays($i - 1) < $refresh_current && $refresh_current < Carbon::now()->addDays($i))
+                        $price_insert[$i] += $data['base_price'];
+                }
+
+            }
+
+            if(!isset($ar_prices[$object->user_id]))
+                for($i = 1; $i <= $days_count; $i++)
+                    $ar_prices[$object->user_id][$i] = 0;
+
+            for($i = 1; $i <= $days_count; $i++)
+                $ar_prices[$object->user_id][$i] += $price_insert[$i];
+
+        }
+
+        foreach ($ar_prices as $user_id => $price) {
+
+            $balance = UserBalanceService::currentBalance($user_id);
+
+            for ($i = 1; $i <= $days_count; $i++) {
+
+                $check_price = 0;
+                for ($j = 1; $j <= $i; $j++)
+                    $check_price += $price[$j];
+
+                if($balance < $check_price) {
+                    LogServices::send('user_notification', [
+                        'text' => 'Вашего баланса хватит на ' . $i . ' ' . NumericHelper::plural(['день', 'дня', 'дней'],  $i) . '.',
+                        'user_id' => $user_id
+                    ]);
+                    break;
+                }
+
+            }
+
+        }
+
     }
 
     /**

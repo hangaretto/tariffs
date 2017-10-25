@@ -5,8 +5,9 @@ Route::group(['prefix' => 'api/v1/magnetar/tariffs'], function () {
     Route::post('/callbacks/paymentAviso', 'Magnetar\Tariffs\Controllers\CallbackController@paymentAviso');
     Route::post('/callbacks/checkOrder', 'Magnetar\Tariffs\Controllers\CallbackController@checkOrder');
 
-    Route::get('/users/{id}/pay', function ($id) {
-        return view('magnetar_tariffs::yandex', ['id' => $id]);
+    Route::get('/users/{id}/pay/{amount}', function ($id, $amount) {
+        $user = \App\User::findOrFail($id);
+        return view('magnetar_tariffs::yandex', ['user' => $user, 'amount' => $amount]);
     });
 
     Route::group(['middleware' => [config('magnetar.tariffs.middleware.auth')]], function () {
@@ -70,17 +71,26 @@ Route::group(['prefix' => 'api/v1/magnetar/tariffs'], function () {
                 Route::put('/{id}', 'Magnetar\Tariffs\Controllers\ObjectCrudController@process')->where('id', '[0-9]+');
                 Route::delete('/{id}', 'Magnetar\Tariffs\Controllers\ObjectCrudController@destroy')->where('id', '[0-9]+');
 
+                Route::put('/{id}/users/{user_id}', 'Magnetar\Tariffs\Controllers\PaymentController@buyObject')->where('id', '[0-9]+');
+                Route::delete('/{id}/users/{user_id}', 'Magnetar\Tariffs\Controllers\UserObjectCrudController@destroyObject')->where('id', '[0-9]+');
+
             });
 
             Route::get('/', 'Magnetar\Tariffs\Controllers\ObjectCrudController@index');
             Route::get('/{id}', 'Magnetar\Tariffs\Controllers\ObjectCrudController@show')->where('id', '[0-9]+');
             Route::get('/{id}/test', 'Magnetar\Tariffs\Controllers\PaymentController@decreaseTest')->where('id', '[0-9]+'); // test
 
-            Route::put('/{id}/buy', 'Magnetar\Tariffs\Controllers\PaymentController@buyObject')->where('id', '[0-9]+');
 
         });
 
-    });
+        Route::group(['prefix' => 'user'], function () {
+            Route::group(['prefix' => '{type}'], function () {
 
+                Route::put('/{id}', 'Magnetar\Tariffs\Controllers\PaymentController@buyObject')->where('id', '[0-9]+');
+                Route::delete('/{id}', 'Magnetar\Tariffs\Controllers\UserObjectCrudController@destroyObject')->where('id', '[0-9]+');
+
+            });
+        });
+    });
 
 });

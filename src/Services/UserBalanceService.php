@@ -94,7 +94,7 @@ class UserBalanceService
         if($tx_code != null) {
 
             $mws = new MWS(new Settings());
-            $mws->repeatCardPayment($tx_code, $amount);
+            $mws->repeatCardPayment($tx_code, $amount, $user_id);
 
         }
 

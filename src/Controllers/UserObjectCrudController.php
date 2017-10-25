@@ -8,6 +8,7 @@ use DB;
 use Magnetar\Tariffs\Models\UserCard;
 use Magnetar\Tariffs\Models\UserObject;
 use Magnetar\Tariffs\ResponseHelper;
+use Magnetar\Tariffs\Services\ObjectServices;
 
 class UserObjectCrudController extends Controller
 {
@@ -108,6 +109,32 @@ class UserObjectCrudController extends Controller
             return ResponseHelper::response_error("not.found", 404);
 
         $user_object->delete();
+
+        return ResponseHelper::response_success("successful");
+
+    }
+
+    /**
+     * Deleting object of user.
+     *
+     * @param string $type
+     * @param int $id
+     * @param int $user_id
+     * @return ResponseHelper
+     */
+    public function destroyObject($type, $id, $user_id = null) {
+
+        if($user_id == null)
+            $user_id = \Auth::guard('api')->user()->id;
+
+        $user_object = UserObject::objects()->where('type_id', ObjectServices::getTypeId($type))
+            ->where('user_id', $user_id)->where('object_id', $id)->get();
+
+        if(count($user_object) == 0)
+            return ResponseHelper::response_error("not.found", 404);
+
+        UserObject::objects()->where('type_id', ObjectServices::getTypeId($type))
+            ->where('user_id', $user_id)->where('object_id', $id)->delete();
 
         return ResponseHelper::response_success("successful");
 

@@ -8,6 +8,13 @@ return [
     'controllers' => [
         'enabled' => true
     ],
+    'services' => [
+        'yandex' => [
+            'shopId' => 111,
+            'scid' => 111,
+            'receipt_text' => 'Аванс за использование сервиса'
+        ]
+    ],
     'billing' => [
         'notifications' => true,
         'subject' => 'Уведомление с сайта - PiperCat',

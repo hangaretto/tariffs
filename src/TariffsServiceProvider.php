@@ -7,7 +7,8 @@ use Illuminate\Support\ServiceProvider;
 class TariffsServiceProvider extends ServiceProvider
 {
     protected $commands = [
-        'Magnetar\Tariffs\Commands\TariffExpired',
+        'Magnetar\Tariffs\Commands\ObjectExpired',
+        'Magnetar\Tariffs\Commands\ObjectNotification',
     ];
 
     /**

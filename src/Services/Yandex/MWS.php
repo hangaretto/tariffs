@@ -3,6 +3,8 @@
 namespace Magnetar\Tariffs\Services\Yandex;
 
 
+use App\User;
+
 class MWS {
     private $settings;
     private $log;
@@ -113,15 +115,20 @@ class MWS {
      * products or services.
      * @param  string|int $invoiceId transaction number of the transfer being repeated.
      * @param  string $amount        amount to make the payment
+     * @param  int $user_id          ID of user
      * @return string                response from Yandex.Money in XML format
      */
-    public function repeatCardPayment($invoiceId, $amount) {
+    public function repeatCardPayment($invoiceId, $amount, $user_id) {
+
+        $user = User::findOrFail($user_id);
+
         $methodName = "repeatCardPayment";
         $this->log->info("Start " . $methodName);
         $requestParams = array(
             'clientOrderId' => time(),
             'invoiceId' => $invoiceId,
-            'amount' => $amount
+            'amount' => $amount,
+            'ym_merchant_receipt' => '{"customerContact": "'.$user->email.'", "taxSystem": 1, "items":[{"quantity": 1, "price": {"amount": '.$amount.'}, "tax": 1, "text": '.json_encode(config('magnetar.tariffs.services.yandex.receipt_text'), JSON_UNESCAPED_UNICODE).'}]}'
         );
         $result = $this->sendUrlEncodedRequest($methodName, $requestParams);
         $this->log->info($result);

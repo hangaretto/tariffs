@@ -123,7 +123,8 @@ class PaymentController extends Controller
 
         return ResponseHelper::response_success('successful', [
             'billing' => UserObjectService::allInfo($user_id),
-            'balance' => UserBalanceService::currentBalance($user_id)
+            'balance' => UserBalanceService::currentBalance($user_id),
+            'user_objects' => UserObject::where('user_id', $user_id)->get(),
         ]);
 
     }

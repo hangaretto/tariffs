@@ -21,12 +21,11 @@ class UserObjectService
      * @param int $user_id
      * @return bool
      */
-    public static function decreaseValue($module_id, $user_id) {
+    public static function decreaseValue($module_id, $user_id, $decrease = 1) {
 
         $success_flag = false;
     
         $user_tariffs = UserObject::where('user_id', $user_id)
-//            ->whereRaw("jsonb_exists(data, 'count')")
             ->where('module_id', $module_id)
             ->get();
 
@@ -40,16 +39,16 @@ class UserObjectService
             if (!isset($data['count']))
                 continue;
 
-            if ($data['count'] > 1 || ($data['count'] == 1 && ($user_tariff->object_id != null))) {
+            if ($data['count'] > $decrease || ($data['count'] == 1 && ($user_tariff->object_id != null))) {
 
-                $data['count'] -= 1;
+                $data['count'] -= $decrease;
                 $user_tariff->data = json_encode($data);
                 $user_tariff->save();
 
                 $success_flag = true;
                 break;
 
-            } else if ($data['count'] == 1) {
+            } else if ($data['count'] == $decrease) {
                 $user_tariff->delete();
                 $success_flag = true;
                 break;

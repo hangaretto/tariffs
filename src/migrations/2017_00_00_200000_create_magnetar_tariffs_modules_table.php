@@ -15,6 +15,7 @@ class CreateMagnetarTariffsModulesTable extends Migration
             $table->integer('group')->unsigned()->nullable();
             $table->integer('grade')->unsigned()->nullable();
             $table->string('name');
+            $table->string('code');
 
             if(config('database.default') == 'pgsql')
                 $table->jsonb('settings')->nullable();
@@ -34,25 +35,25 @@ class CreateMagnetarTariffsModulesTable extends Migration
 //            $table->foreign('currency_id')->references('id')->on('magnetar_tariffs_currencies')->onDelete('set null');
         });
 
-        //        TEST DATA
-        $object = new Module();
-        $object->name = 'TEST';
-        $object->settings = '{"active": true}';
-        $object->price = '{"P0Y": {"price": 20}}';
-        $object->save();
-
-        $object = new Module();
-        $object->name = 'sms';
-        $object->settings = '{"count": 1, "active": true}';
-        $object->group = 1;
-        $object->grade = 1;
-        $object->save();
-
-        $object = new Module();
-        $object->name = 'test2';
-        $object->settings = '{"active": true}';
-        $object->price = '{"P0Y": {"price": 25}, "P0Y1M": {"price": 20}, "P0Y2M": {"price": 15}, "P0Y3M": {"price": 12}}';
-        $object->save();
+//        TEST DATA
+//        $object = new Module();
+//        $object->name = 'TEST';
+//        $object->settings = '{"active": true}';
+//        $object->price = '{"P0Y": {"price": 20}}';
+//        $object->save();
+//
+//        $object = new Module();
+//        $object->name = 'sms';
+//        $object->settings = '{"count": 1, "active": true}';
+//        $object->group = 1;
+//        $object->grade = 1;
+//        $object->save();
+//
+//        $object = new Module();
+//        $object->name = 'test2';
+//        $object->settings = '{"active": true}';
+//        $object->price = '{"P0Y": {"price": 25}, "P0Y1M": {"price": 20}, "P0Y2M": {"price": 15}, "P0Y3M": {"price": 12}}';
+//        $object->save();
 
     }
 

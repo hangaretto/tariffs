@@ -20,7 +20,8 @@ use DB;
 
 class Module extends Model {
 
-    protected $table = 'magnetar_tariffs_modules';
+    const TABLE_NAME = 'magnetar_tariffs_modules';
+    protected $table = self::TABLE_NAME;
 
     protected $rules = [
         'name' => 'required|string',

@@ -20,7 +20,8 @@ use Magnetar\Tariffs\Services\UserObjectService;
 
 class Object extends Model {
 
-    protected $table = 'magnetar_tariffs_objects';
+    const TABLE_NAME = 'magnetar_tariffs_objects';
+    protected $table = self::TABLE_NAME;
 
     protected $rules = [
         'name' => 'required|string',

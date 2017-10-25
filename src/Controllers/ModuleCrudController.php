@@ -68,6 +68,7 @@ class ModuleCrudController extends Controller
             $module->group = $request->input('group');
             $module->grade = $request->input('grade');
             $module->name = $request->input('name');
+            $module->code = $request->input('code');
             $module->settings = $request->input('settings');
             $module->price = $request->input('price');
 

@@ -17,16 +17,17 @@ class UserObjectService
     /**
      * Decrease value, if isset count parameter.
      *
-     * @param string $module_id
+     * @param string $module_code
      * @param int $user_id
      * @return bool
      */
-    public static function decreaseValue($module_id, $user_id, $decrease = 1) {
+    public static function decreaseValue($module_code, $user_id, $decrease = 1) {
 
         $success_flag = false;
     
-        $user_tariffs = UserObject::where('user_id', $user_id)
-            ->where('module_id', $module_id)
+        $user_tariffs = UserObject::modules()
+            ->where(UserObject::TABLE_NAME.'.user_id', $user_id)
+            ->orWhere(Module::TABLE_NAME.'.code', $module_code)
             ->get();
 
         if(count($user_tariffs) == 0)

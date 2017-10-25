@@ -9,7 +9,8 @@ use Magnetar\Tariffs\Presenters\ValidatePresenter;
 
 class UserObject extends Model {
 
-    protected $table = 'magnetar_tariffs_user_objects';
+    const TABLE_NAME = 'magnetar_tariffs_user_objects';
+    protected $table = self::TABLE_NAME;
 
     protected $rules = [
         'price' => 'integer',
@@ -37,7 +38,19 @@ class UserObject extends Model {
      */
     public function scopeObjects($query) {
 
-        return $query->leftJoin('magnetar_tariffs_objects', 'magnetar_tariffs_objects.id', '=', 'magnetar_tariffs_user_objects.object_id');
+        return $query->leftJoin(Object::TABLE_NAME, Object::TABLE_NAME.'.id', '=', self::TABLE_NAME.'.object_id');
+
+    }
+
+    /**
+     * Scope lj objects.
+     *
+     * @param object $query
+     * @return object $query
+     */
+    public function scopeModules($query) {
+
+        return $query->leftJoin(Module::TABLE_NAME, Module::TABLE_NAME.'.id', '=', self::TABLE_NAME.'.module_id');
 
     }
 

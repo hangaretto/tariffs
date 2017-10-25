@@ -9,6 +9,6 @@
         "magnetar/log": "v1.0.0",
         "magnetar/mailing": "v1.0.0"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

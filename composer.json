@@ -6,8 +6,8 @@
         }
     },
     "require": {
-        "magnetar/log": "dev-master",
-        "magnetar/mailing": "dev-master"
+        "magnetar/log": "v1.0.0",
+        "magnetar/mailing": "v1.0.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

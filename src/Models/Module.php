@@ -48,10 +48,9 @@ class Module extends Model {
      *
      * @param int $user_id
      */
-    public function deleteSmallerTariffs($user_id) {
-
+    public function deleteSmallerTariffs($user_id)
+    {
         if($this->grade > 0) {
-
             $deleted_user_modules = self::select('id')
                 ->where('grade', '<', $this->grade)->where('group', $this->group)->get();
 
@@ -62,9 +61,7 @@ class Module extends Model {
             if(count($ar_deleted_user_modules) > 0)
                 UserObject::whereIn('module_id', $ar_deleted_user_modules)
                     ->where('user_id', $user_id)->delete();
-
         }
-
     }
 
     /**
@@ -73,16 +70,15 @@ class Module extends Model {
      * @param int $user_id
      * @throws
      */
-    public function addToUser($user_id, $period) {
-
+    public function addToUser($user_id, $period)
+    {
         if($this->price == null)
             throw new \Exception('access.denied');
 
         $expired_at = UserObjectService::calculateExpired_at($this->price, $period);
-
         $user_object = new UserObject();
-
         $user_object->price = current($this->price)['price'];
+
         foreach ($this->price as $interval => $item) {
             $date = new Carbon();
             $date_check = $date->add(new \DateInterval($interval));
@@ -91,7 +87,6 @@ class Module extends Model {
                 $user_object->price = $item['price'];
             else
                 break;
-
         }
 
         $user_object->module_id = $this->id;
@@ -101,17 +96,7 @@ class Module extends Model {
         $user_object->paid_at = Carbon::now();
 
         $this->deleteSmallerTariffs($user_id);
-
         $user_object->save();
-
         UserBalanceService::create($user_id, UserBalanceReference::DAILY_BUY, $user_object->price);
-
     }
-
-//    public function getSettingsAttribute($value) {
-//
-//        return json_decode($value, true);
-//
-//    }
-
 }

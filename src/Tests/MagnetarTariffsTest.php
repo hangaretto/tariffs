@@ -10,7 +10,7 @@ use Queue;
 class MagnetarTariffsTest extends TestCase
 {
     private $headers = [
-        'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjVkOWU2NDY1Mjk3YmE4NjBhMjljMjhkNzliNzA2NmYzZDVlZDIxMmU3ODNkZTUzN2JjOWEwYmJhZWZlNGQ2YzgwMmYzNjczN2FiN2VkZWYyIn0.eyJhdWQiOiIyIiwianRpIjoiNWQ5ZTY0NjUyOTdiYTg2MGEyOWMyOGQ3OWI3MDY2ZjNkNWVkMjEyZTc4M2RlNTM3YmM5YTBiYmFlZmU0ZDZjODAyZjM2NzM3YWI3ZWRlZjIiLCJpYXQiOjE1MDc1NDE4MzEsIm5iZiI6MTUwNzU0MTgzMSwiZXhwIjoxNTM5MDc3ODMxLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.BrVyUGINH8SpbkTmTUcQXyuMSxMnsdlHYjvl-a1WBteVhWjIIU5lYHHvIZWGE84kh7jpZo3Ymk9lGUTQgUBxAXBluRLlao75qSbdcVo9FayEnKMwhrZtJPvivpd8gI_w5BHvuROmcfHyLGke44CXxcfBhtlI9KalH4keFMSYQQENc86cvaZBxbhRK-Wiq_L66HY8vcNLQ1zvF4_xPkwfLSKm6Lz7pBG6eLraXIj14qIAR0lsQw6bzP2QMWT8kmEbaklUMrmkQyUa775qqh5YodSKBduwQS-OZXjmwIsym2kcM8F169PwSQgR-2eQiZOiKfbYaF_ogxZjVDncn1r1NLMJsCdqj4kjm6VdhAdZdIE5Hbz7X0Rt0GMHTE2VQ8mCEehwGEQTfKF0cIiMCw8gdqzpPaD-ruTZLYbraP5UGn_pMyWuTZPt-kVnxqfGcY8sDL5TZhrCSK8cphJrp45XmY8-PML389OZmn0ODiS5rmWHthBfnzPsAna7nWZzRJn_oGFw5T6fqfNdxGUnS-qk9nX6V_0AQA_AuTN6kNXx1G4KfAZ0pZVznPtQc_RNNgwBZnsw1NRQmRKpkEGRK3LVpXdcFfZf3m3gc-k-HAex_mAEOrbSa1YuS4voKLdKzZjl1VoZKb4wM74gVjd-lHpA5rMRVqZVB0gLGPbsBoyaKVo',
+        'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjE3YmJiNmJhZTg2NWQ1MjdhNTQ4NTA4YzY4ODIzMDUyNjkxNTllNjhkYTZmNjNkYjBkZjU0MTIzNjU5ZTAwMDhiMmRlZjM0ZThlOTBjMmJjIn0.eyJhdWQiOiIyIiwianRpIjoiMTdiYmI2YmFlODY1ZDUyN2E1NDg1MDhjNjg4MjMwNTI2OTE1OWU2OGRhNmY2M2RiMGRmNTQxMjM2NTllMDAwOGIyZGVmMzRlOGU5MGMyYmMiLCJpYXQiOjE1MjAyMjYyMzMsIm5iZiI6MTUyMDIyNjIzMywiZXhwIjoxNTUxNzYyMjMzLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.PJmaSZ3z6G5Jq6mwAgLQlLW4U1yy_6muqrI2ZL2WsaRtePRntIlRJQLN89sXvNHxjJ_hPwpMK-H4NHQnkqLkOis-uQopasmeETRz6WUIAUJswbNWRGOynJAF6UbLrDsVMXaUmXJIPx7E9Yywbso-KvCJZ-7FVpw6Kdke6BJQlWj9TJMg0SEjKTGAU5yAVR_IaH1ZoFa0mFKBlTg3EaGV0hEqSH22xMk_TOgoB-hhcKg4gjQIHZMzVeQyudSpgxxSvxF0qb9trn6Zo_8cyVMNvJhH0iRd3dONmcgrF8uNXnAzOsFPkk07_9VXzuSjQfPQjXU8s0i1I0_OFnsDA-BsbVHeR-igsq_q4dCTSuVAxGAq8xJgAtJvkcfzO16UWXZymEkf7m52mvzNZ3VfihcC8yuoT0DyOqrc2CIH2NzqoOwmJparfkPNHKB5T76CAqk2rVv4hgUIT7im9Yy3NnUxGmtJCMb5UdZke9zFCVnkAShMu3t5fys3vq7FcpHbcTNrCypwFrj_uddLMoofI-HhJdAZrvOwNv8PuJpyxZo7GXrTHyzz-2ozENNo3CWNIlX33dDpzuI-xmp7Pc7is5Rp3fJIfU_JBw0ghc1tJcM4mE2giFY-6KaA7cO_odA-1usm1L6NcRrrjX5yt4Y51MGtILsRfrJxI0mliLvhmi2ZJck',
     ];
 
     public function testObjectCRUD()
@@ -59,14 +59,14 @@ class MagnetarTariffsTest extends TestCase
                     'status' => 'success',
                 ]);
 
-            $response = $this->withHeaders($this->headers)->json('PUT', 'api/v1/magnetar/tariffs/tariffs/' . $id . '/buy', [
-                'period' => 'P0Y1M'
-            ]);
-            $response
-                ->assertStatus(200)
-                ->assertJson([
-                    'status' => 'success',
-                ]);
+//            $response = $this->withHeaders($this->headers)->json('PUT', 'api/v1/magnetar/tariffs/tariffs/' . $id . '/users/1', [ // todo
+//                'period' => 'P0Y1M'
+//            ]);
+//            $response
+//                ->assertStatus(200)
+//                ->assertJson([
+//                    'status' => 'success',
+//                ]);
 
             $response = $this->withHeaders($this->headers)->json('DELETE', 'api/v1/magnetar/tariffs/tariffs/' . $id, []);
             $response
@@ -141,6 +141,7 @@ class MagnetarTariffsTest extends TestCase
 
         $post_data = [
             'name' => 'Test',
+            'code' => 'test',
             'settings' => '{"active": true}',
             'price' => '{"P0Y": {"price": 25}, "P0Y1M": {"price": 20}, "P0Y2M": {"price": 15}, "P0Y3M": {"price": 12}}',
         ];

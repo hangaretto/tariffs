@@ -40,9 +40,6 @@ class ObjectNotification extends Command
      */
     public function handle()
     {
-
         UserObjectService::sendNotifications();
-
     }
-
 }

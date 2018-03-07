@@ -10,19 +10,16 @@ use Magnetar\Tariffs\ResponseHelper;
 
 class ModuleCrudController extends Controller
 {
-
     /**
      * Return modules list.
      *
      * @param Request $request
      * @return ResponseHelper
      */
-    public function index(Request $request) {
-
+    public function index(Request $request)
+    {
         $out['modules'] = Module::get();
-
         return ResponseHelper::response_success("successful", $out);
-
     }
 
     /**
@@ -32,15 +29,14 @@ class ModuleCrudController extends Controller
      * @param int $id
      * @return ResponseHelper
      */
-    public function show(Request $request, $id) {
-
+    public function show(Request $request, $id)
+    {
         $out['module'] = Module::find($id);
 
         if(!$out['module'])
             return ResponseHelper::response_error("not.found", 404);
 
         return ResponseHelper::response_success("successful", $out);
-
     }
 
     /**
@@ -48,23 +44,20 @@ class ModuleCrudController extends Controller
      *
      * @param Request $request
      * @param int $id
-     * @return ResponseHelper
+     * @return ResponseHelper$object
      */
-    public function process(Request $request, $id = null) {
-
+    public function process(Request $request, $id = null)
+    {
         if($id == null)
             $module = new Module();
         else {
-
             $module = Module::find($id);
 
             if(!$module)
                 return ResponseHelper::response_error("not.found", 404);
-
         }
 
         if ($module->validate($request->all())) {
-
             $module->group = $request->input('group');
             $module->grade = $request->input('grade');
             $module->name = $request->input('name');
@@ -73,12 +66,9 @@ class ModuleCrudController extends Controller
             $module->price = $request->input('price');
 
             $module->save();
-
             return ResponseHelper::response_success("update", ['module' => $module]);
-
         } else
             return ResponseHelper::response_error($module->errors(), 400);
-
     }
 
     /**
@@ -87,17 +77,14 @@ class ModuleCrudController extends Controller
      * @param int $id
      * @return ResponseHelper
      */
-    public function destroy($id) {
-
+    public function destroy($id)
+    {
         $module = Module::find($id);
 
         if(!$module)
             return ResponseHelper::response_error("not.found", 404);
 
         $module->delete();
-
         return ResponseHelper::response_success("successful");
-
     }
-
 }

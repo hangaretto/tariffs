@@ -78,8 +78,7 @@ Route::group(['prefix' => 'api/v1/magnetar/tariffs'], function () {
 
             Route::get('/', 'Magnetar\Tariffs\Controllers\ObjectCrudController@index');
             Route::get('/{id}', 'Magnetar\Tariffs\Controllers\ObjectCrudController@show')->where('id', '[0-9]+');
-            Route::get('/{id}/test', 'Magnetar\Tariffs\Controllers\PaymentController@decreaseTest')->where('id', '[0-9]+'); // test
-
+//            Route::get('/{id}/test', 'Magnetar\Tariffs\Controllers\PaymentController@decreaseTest')->where('id', '[0-9]+'); // test
 
         });
 

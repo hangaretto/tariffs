@@ -7,12 +7,11 @@ use App\Http\Controllers\Controller;
 use Magnetar\Tariffs\Models\Module;
 use Magnetar\Tariffs\Models\Object;
 use Magnetar\Tariffs\ResponseHelper;
-use Magnetar\Tariffs\Services\ObjectServices;
+use Magnetar\Tariffs\References\ObjectReference;
 use Validator;
 
 class ObjectCrudController extends Controller
 {
-
     /**
      * List of objects.
      *
@@ -20,12 +19,10 @@ class ObjectCrudController extends Controller
      * @param string $type
      * @return ResponseHelper
      */
-    public function index(Request $request, $type) {
-
-        $out['objects'] = Object::where('type_id', ObjectServices::getTypeId($type))->get();
-
+    public function index(Request $request, $type)
+    {
+        $out['objects'] = Object::where('type_id', ObjectReference::getTypeId($type))->get();
         return ResponseHelper::response_success("successful", $out);
-
     }
 
     /**
@@ -35,15 +32,14 @@ class ObjectCrudController extends Controller
      * @param int $id
      * @return ResponseHelper
      */
-    public function show($type, $id) {
-
-        $out['object'] = Object::where('type_id', ObjectServices::getTypeId($type))->find($id);
+    public function show($type, $id)
+    {
+        $out['object'] = Object::where('type_id', ObjectReference::getTypeId($type))->find($id);
 
         if(!$out['object'])
             return ResponseHelper::response_error("not.found", 404);
 
         return ResponseHelper::response_success("successful", $out);
-
     }
 
     /**
@@ -54,25 +50,21 @@ class ObjectCrudController extends Controller
      * @param int $id
      * @return ResponseHelper
      */
-    public function process(Request $request, $type, $id = null) {
-
+    public function process(Request $request, $type, $id = null)
+    {
         if($id == null)
             $object = new Object();
         else {
-
-            $object = Object::where('type_id', ObjectServices::getTypeId($type))->find($id);
+            $object = Object::where('type_id', ObjectReference::getTypeId($type))->find($id);
 
             if(!$object)
                 return ResponseHelper::response_error("not.found", 404);
-
         }
 
         if ($object->validate($request->all())) {
-
             $req_json = json_decode($request->input('data'), true);
 
             foreach ($req_json as $module_id => $item) {
-
                 $module = Module::find($module_id);
                 if(!$module)
                     unset($req_json[$module_id]);
@@ -81,7 +73,6 @@ class ObjectCrudController extends Controller
 
                 if(isset($item['count']) && !isset($module_settings['count']))
                     unset($req_json[$module_id]);
-
             }
 
             $object->name = $request->input('name');
@@ -90,14 +81,10 @@ class ObjectCrudController extends Controller
             $object->data = json_encode($req_json);
 
 // {"1": {"active": "true"}, "2": {"count": 50, "active": "true"}, "3": {"active": "true", "period": 10, "period_type": "day"}}
-
             $object->save();
-
             return ResponseHelper::response_success("update", ['object' => $object]);
-
         } else
             return ResponseHelper::response_error($object->errors(), 400);
-
     }
 
     /**
@@ -107,17 +94,14 @@ class ObjectCrudController extends Controller
      * @param int $id
      * @return ResponseHelper
      */
-    public function destroy($type, $id) {
-
-        $object = Object::where('type_id', ObjectServices::getTypeId($type))->find($id);
+    public function destroy($type, $id)
+    {
+        $object = Object::where('type_id', ObjectReference::getTypeId($type))->find($id);
 
         if(!$object)
             return ResponseHelper::response_error("not.found", 404);
 
         $object->delete();
-
         return ResponseHelper::response_success("successful");
-
     }
-
 }

@@ -26,8 +26,8 @@ class UserBalanceService
      * @return int id
      * @throws
      */
-    public static function create($user_id, $action, $amount, $info = []) {
-
+    public static function create($user_id, $action, $amount, $info = [])
+    {
         $amount = NumericHelper::toPositive($amount);
 
 //        if(array_key_exists($action, UserBalanceReference::INFO_TEMPLATES) == false)
@@ -47,12 +47,9 @@ class UserBalanceService
 
         $action = $reference['action'];
         if($action == '-') {
-
             $sum = self::currentBalance($user_id);
-
             if($sum - $amount < 0)
                 throw new \Exception('need.money');
-
         }
 
         $user_balance = new UserBalance();
@@ -65,7 +62,6 @@ class UserBalanceService
             $user_balance->sendNotification();
 
         return $user_balance->id;
-
     }
 
     /**
@@ -74,10 +70,9 @@ class UserBalanceService
      * @param int $user_id
      * @return float
      */
-    public static function currentBalance($user_id) {
-
+    public static function currentBalance($user_id)
+    {
         return floatval(UserBalance::where('user_id', $user_id)->sum('amount'));
-
     }
 
     /**
@@ -87,18 +82,15 @@ class UserBalanceService
      * @param float $amount
      * @return float
      */
-    public static function buyBalance($user_id, $amount) {
-
-        $tx_code = UserDataServices::getData($user_id, 'last_code');
-
-        if($tx_code != null) {
-
-            $mws = new MWS(new Settings());
-            $mws->repeatCardPayment($tx_code, $amount, $user_id);
-
-        }
+    public static function buyBalance($user_id, $amount)
+    {
+//        $tx_code = UserDataServices::getData($user_id, 'last_code'); // todo::
+//
+//        if($tx_code != null) {
+//            $mws = new MWS(new Settings());
+//            $mws->repeatCardPayment($tx_code, $amount, $user_id);
+//        }
 
         return UserBalanceService::currentBalance($user_id);
-
     }
 }

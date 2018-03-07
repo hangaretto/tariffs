@@ -40,9 +40,6 @@ class ObjectExpired extends Command
      */
     public function handle()
     {
-
         UserObjectService::checkExpired();
-
     }
-
 }

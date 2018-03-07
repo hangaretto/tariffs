@@ -24,10 +24,9 @@ class UserObject extends Model {
 
     use ValidatePresenter;
 
-    public function getDataAttribute($value) {
-
+    public function getDataAttribute($value)
+    {
         return $value = json_decode($value, true);
-
     }
 
     /**
@@ -36,22 +35,20 @@ class UserObject extends Model {
      * @param object $query
      * @return object $query
      */
-    public function scopeObjects($query) {
-
+    public function scopeObjects($query)
+    {
         return $query->leftJoin(Object::TABLE_NAME, Object::TABLE_NAME.'.id', '=', self::TABLE_NAME.'.object_id');
-
     }
 
     /**
-     * Scope lj objects.
+     * Scope lj modules.
      *
      * @param object $query
      * @return object $query
      */
-    public function scopeModules($query) {
-
+    public function scopeModules($query)
+    {
         return $query->leftJoin(Module::TABLE_NAME, Module::TABLE_NAME.'.id', '=', self::TABLE_NAME.'.module_id');
-
     }
 
 }

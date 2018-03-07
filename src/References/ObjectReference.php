@@ -1,9 +1,9 @@
 <?php
 
-namespace Magnetar\Tariffs\Services;
+namespace Magnetar\Tariffs\References;
 
-class ObjectServices {
-
+class ObjectReference
+{
     const MAGNETAR_TARIFFS_TARIFFS = 'tariffs';
     const MAGNETAR_TARIFFS_PACKAGES = 'packages';
 
@@ -19,13 +19,11 @@ class ObjectServices {
      * @return int
      * @throws
      */
-    public static function getTypeId($type) {
-
+    public static function getTypeId($type)
+    {
         if(!isset(self::MAGNETAR_TARIFFS_TYPES[$type]))
             throw new \Exception('access.denied');
 
         return self::MAGNETAR_TARIFFS_TYPES[$type];
-
     }
-
 }

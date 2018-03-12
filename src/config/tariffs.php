@@ -10,9 +10,13 @@ return [
     ],
     'services' => [
         'yandex' => [
-            'shopId' => 111,
-            'scid' => 111,
-            'receipt_text' => 'Аванс за использование сервиса'
+            'testmode' => true,
+            'shopId' => 160091,
+            'shopPassword' => '123123',
+            'scid' => 558710,
+            'currency' => 10643,
+            'certPassword' => '123123',
+            'receipt_text' => 'Аванс за использование сервиса',
         ]
     ],
     'billing' => [

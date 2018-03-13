@@ -5,6 +5,7 @@
     <input name="sum" value="{{ $amount }}" type="hidden">
     <input name="module" value="magnetar_billing" type="hidden">
     <input name="paymentType" value="AC" type="hidden">
+    <input name="module_env" value="{{ config('app.env') }}" type="hidden">
     <input type="submit" value="Пополнить"/>
     <input name="ym_merchant_receipt"
        value='{"customerContact": "{{ $user->email }}","taxSystem": 1, "items":[{"quantity": 1, "price": {"amount": {{ $amount }}}, "tax": 1, "text": {{ json_encode(config('magnetar.tariffs.services.yandex.receipt_text'), JSON_UNESCAPED_UNICODE) }}}]}'

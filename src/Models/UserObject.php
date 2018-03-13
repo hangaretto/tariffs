@@ -12,6 +12,8 @@ class UserObject extends Model {
     const TABLE_NAME = 'magnetar_tariffs_user_objects';
     protected $table = self::TABLE_NAME;
 
+    protected $fillable = ['price', 'object_id', 'user_id', 'module_id', 'data', 'expired_at', 'paid_at'];
+
     protected $rules = [
         'price' => 'integer',
         'object_id' => 'integer',

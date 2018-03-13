@@ -16,6 +16,8 @@ class UserData extends Model {
 
     protected $table = 'magnetar_tariffs_user_data';
 
+    protected $fillable = ['user_id', 'data'];
+
     public function getDataAttribute($value)
     {
         return json_decode($value, true);

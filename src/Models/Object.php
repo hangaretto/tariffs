@@ -24,6 +24,8 @@ class Object extends Model {
     const TABLE_NAME = 'magnetar_tariffs_objects';
     protected $table = self::TABLE_NAME;
 
+    protected $fillable = ['name', 'type_id', 'periods', 'data', 'code'];
+
     protected $rules = [
         'name' => 'required|string',
         'type_id' => 'required|integer',

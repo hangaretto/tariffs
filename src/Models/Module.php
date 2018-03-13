@@ -23,6 +23,8 @@ class Module extends Model {
     const TABLE_NAME = 'magnetar_tariffs_modules';
     protected $table = self::TABLE_NAME;
 
+    protected $fillable = ['group', 'grade', 'name', 'settings', 'price', 'code'];
+
     protected $rules = [
         'name' => 'required|string',
         'price' => 'required|json',

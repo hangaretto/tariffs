@@ -231,8 +231,22 @@ class UserObjectService
                 unset($user_object);
             }
 
-            if($necessary_sum > $user_balance)
-                LogServices::send('user_notification', ['text' => 'Платные услуги отключены, из-за отсутсвия баланса.', 'user_id' => $user_id]);
+            if($necessary_sum > $user_balance) {
+                $log_data = [
+                    'text' => 'Платные услуги отключены, из-за отсутсвия баланса.',
+                    'user_id' => $user_id
+                ];
+
+                $user_email = UserDataServices::getData($user_id, 'email');
+                if($user_email != null)
+                    $log_data['email'] = $user_email;
+
+                $user_phone = UserDataServices::getData($user_id, 'phone');
+                if($user_phone != null)
+                    $log_data['phone'] = $user_phone;
+
+                LogServices::send('user_notification', $log_data);
+            }
         }
     }
     

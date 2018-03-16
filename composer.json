@@ -6,7 +6,7 @@
         }
     },
     "require": {
-        "magnetar/log": "v1.0.1",
+        "magnetar/log": "v1.0.2",
         "magnetar/mailing": "v1.0.0"
     },
     "minimum-stability": "stable",

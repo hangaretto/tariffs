@@ -53,7 +53,7 @@ class UserBalanceService
         }
 
         $user_balance = new UserBalance();
-        $user_balance->amount = $action  == '-' ? NumericHelper::toNegative($amount) : $amount;
+        $user_balance->amount = $action == '-' ? NumericHelper::toNegative($amount) : $amount;
         $user_balance->info = $template;
         $user_balance->user_id = $user_id;
         $user_balance->save();

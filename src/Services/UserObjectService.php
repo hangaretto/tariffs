@@ -294,10 +294,20 @@ class UserObjectService
                     $check_price += $price[$j];
 
                 if($balance < $check_price) {
-                    LogServices::send('user_notification', [
+                    $log_data = [
                         'text' => 'Вашего баланса хватит на ' . $i . ' ' . NumericHelper::plural(['день', 'дня', 'дней'],  $i) . '.',
                         'user_id' => $user_id
-                    ]);
+                    ];
+
+                    $user_email = UserDataServices::getData($user_id, 'email');
+                    if($user_email != null)
+                        $log_data['email'] = $user_email;
+
+                    $user_phone = UserDataServices::getData($user_id, 'phone');
+                    if($user_phone != null)
+                        $log_data['phone'] = $user_phone;
+
+                    LogServices::send('user_notification', $log_data);
                     break;
                 }
             }

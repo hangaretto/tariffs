@@ -15,7 +15,7 @@ class UserObject extends Model {
     protected $fillable = ['price', 'object_id', 'user_id', 'module_id', 'data', 'expired_at', 'paid_at'];
 
     protected $rules = [
-        'price' => 'integer',
+        'price' => 'numeric',
         'object_id' => 'integer',
         'module_id' => 'required|integer',
         'user_id' => 'required|integer',

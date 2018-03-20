@@ -48,6 +48,8 @@ class UserDataServices
             $user_data = self::$ar_data[$user_id];
         else {
             $obj_user_data = UserData::select('data')->where('user_id', $user_id)->first();
+            if(!$obj_user_data)
+                return null;
             $user_data = $obj_user_data->data;
             self::$ar_data[$user_id] = $user_data;
         }

@@ -131,7 +131,7 @@ class UserObjectService
 
         $now = Carbon::now();
 
-        $ar_objects = $ar_prices = $ar_objects_ids = [];
+        $ar_objects = $ar_prices = $ar_prices_enabled = $ar_objects_ids = [];
         foreach ($user_objects as $object) {
             $ar_objects[$object->user_id][$object->object_id][] = $object;
 
@@ -140,14 +140,18 @@ class UserObjectService
                 $price_insert += $object->price;
 
             $data = $object->data;
-
             if (isset($data['refresh_period']) && isset($data['refresh_in']) && new Carbon($data['refresh_in']) < $now && isset($data['base_price']))
                 $price_insert += $data['base_price'];
 
-            if(!isset($ar_prices[$object->user_id][$object->object_id]))
+            if(!isset($ar_prices[$object->user_id][$object->object_id])) {
                 $ar_prices[$object->user_id][$object->object_id] = 0;
+                $ar_prices_enabled[$object->user_id][$object->object_id] = 0;
+            }
 
             $ar_prices[$object->user_id][$object->object_id] += $price_insert;
+
+            if (isset($data['active']) && $data['active'] == true)
+                $ar_prices_enabled[$object->user_id][$object->object_id] += $price_insert;
 
             if (!in_array($object->object_id, $ar_objects_ids))
                 $ar_objects_ids[] = $object->object_id;
@@ -159,6 +163,7 @@ class UserObjectService
         foreach ($ar_prices as $user_id => $user_prices) {
 
             $necessary_sum = array_sum($user_prices);
+            $necessary_sum_enabled = array_sum($ar_prices_enabled[$user_id]);
             $user_balance = UserBalanceService::currentBalance($user_id);
 
             if ($necessary_sum > $user_balance)
@@ -231,7 +236,7 @@ class UserObjectService
                 unset($user_object);
             }
 
-            if($necessary_sum > $user_balance) {
+            if($necessary_sum_enabled > $user_balance) {
                 $log_data = [
                     'text' => 'Платные услуги отключены, из-за отсутсвия баланса.',
                     'user_id' => $user_id

@@ -313,6 +313,10 @@ class UserObjectService
                     $check_price += $price[$j];
 
                 if($balance < $check_price) {
+                    $days = $i - 1;
+                    if($days == 0)
+                        break;
+
                     $log_data = [
                         'text' => 'Вашего баланса хватит на ' . $i . ' ' . NumericHelper::plural(['день', 'дня', 'дней'],  $i) . '.',
                         'user_id' => $user_id

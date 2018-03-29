@@ -5,7 +5,7 @@ namespace Magnetar\Tariffs\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Magnetar\Tariffs\Models\Module;
-use Magnetar\Tariffs\Models\Object;
+use Magnetar\Tariffs\Models\Tariff;
 use Magnetar\Tariffs\ResponseHelper;
 use Magnetar\Tariffs\References\ObjectReference;
 use Validator;
@@ -21,7 +21,7 @@ class ObjectCrudController extends Controller
      */
     public function index(Request $request, $type)
     {
-        $out['objects'] = Object::where('type_id', ObjectReference::getTypeId($type))->get();
+        $out['objects'] = Tariff::where('type_id', ObjectReference::getTypeId($type))->get();
         return ResponseHelper::response_success("successful", $out);
     }
 
@@ -34,7 +34,7 @@ class ObjectCrudController extends Controller
      */
     public function show($type, $id)
     {
-        $out['object'] = Object::where('type_id', ObjectReference::getTypeId($type))->find($id);
+        $out['object'] = Tariff::where('type_id', ObjectReference::getTypeId($type))->find($id);
 
         if(!$out['object'])
             return ResponseHelper::response_error("not.found", 404);
@@ -53,9 +53,9 @@ class ObjectCrudController extends Controller
     public function process(Request $request, $type, $id = null)
     {
         if($id == null)
-            $object = new Object();
+            $object = new Tariff();
         else {
-            $object = Object::where('type_id', ObjectReference::getTypeId($type))->find($id);
+            $object = Tariff::where('type_id', ObjectReference::getTypeId($type))->find($id);
 
             if(!$object)
                 return ResponseHelper::response_error("not.found", 404);
@@ -96,7 +96,7 @@ class ObjectCrudController extends Controller
      */
     public function destroy($type, $id)
     {
-        $object = Object::where('type_id', ObjectReference::getTypeId($type))->find($id);
+        $object = Tariff::where('type_id', ObjectReference::getTypeId($type))->find($id);
 
         if(!$object)
             return ResponseHelper::response_error("not.found", 404);

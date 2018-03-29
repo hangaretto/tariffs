@@ -39,7 +39,7 @@ class UserObject extends Model {
      */
     public function scopeObjects($query)
     {
-        return $query->leftJoin(Object::TABLE_NAME, Object::TABLE_NAME.'.id', '=', self::TABLE_NAME.'.object_id');
+        return $query->leftJoin(Tariff::TABLE_NAME, Tariff::TABLE_NAME.'.id', '=', self::TABLE_NAME.'.object_id');
     }
 
     /**

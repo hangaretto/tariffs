@@ -4,7 +4,7 @@ namespace Magnetar\Tariffs\Services;
 
 use Magnetar\Log\Services\LogServices;
 use Magnetar\Tariffs\Models\Module;
-use Magnetar\Tariffs\Models\Object;
+use Magnetar\Tariffs\Models\Tariff;
 use Magnetar\Tariffs\Models\UserObject;
 use Magnetar\Tariffs\NumericHelper;
 use Magnetar\Tariffs\References\UserBalanceReference;
@@ -158,7 +158,7 @@ class UserObjectService
         }
 
         if(count($ar_objects_ids) > 0)
-            $objects = Object::whereIn('id', $ar_objects_ids)->get()->keyBy('id');
+            $objects = Tariff::whereIn('id', $ar_objects_ids)->get()->keyBy('id');
 
         foreach ($ar_prices as $user_id => $user_prices) {
 

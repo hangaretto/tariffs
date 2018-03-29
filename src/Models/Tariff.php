@@ -19,7 +19,7 @@ use Magnetar\Tariffs\Services\UserBalanceService;
 use DB;
 use Magnetar\Tariffs\Services\UserObjectService;
 
-class Object extends Model {
+class Tariff extends Model {
 
     const TABLE_NAME = 'magnetar_tariffs_objects';
     protected $table = self::TABLE_NAME;

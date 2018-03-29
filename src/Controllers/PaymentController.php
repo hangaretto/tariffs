@@ -5,7 +5,7 @@ namespace Magnetar\Tariffs\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Magnetar\Tariffs\Models\Module;
-use Magnetar\Tariffs\Models\Object;
+use Magnetar\Tariffs\Models\Tariff;
 use Magnetar\Tariffs\Models\UserObject;
 use Magnetar\Tariffs\References\UserBalanceReference;
 use Magnetar\Tariffs\ResponseHelper;
@@ -28,7 +28,7 @@ class PaymentController extends Controller
     {
         $user_id = \Auth::guard('api')->user()->id;
 
-        $object = Object::where('type_id', ObjectReference::getTypeId($type))->find($id);
+        $object = Tariff::where('type_id', ObjectReference::getTypeId($type))->find($id);
         if(!$object)
             return ResponseHelper::response_error('not.found', 404);
 

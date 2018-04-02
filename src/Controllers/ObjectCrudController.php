@@ -21,7 +21,17 @@ class ObjectCrudController extends Controller
      */
     public function index(Request $request, $type)
     {
-        $out['objects'] = Tariff::where('type_id', ObjectReference::getTypeId($type))->get();
+        $objects = Tariff::where('type_id', ObjectReference::getTypeId($type))->get();
+        $modules = Module::get()->keyBy('id');
+        foreach ($objects as $k => $object) {
+            $out['objects'][$k] = $object;
+            $object_modules = [];
+            foreach ($object->data as $id => $item) {
+                if(isset($modules[$id]))
+                    $object_modules[$id] = $modules[$id];
+            }
+            $out['objects'][$k]['modules'] = $object_modules;
+        }
         return ResponseHelper::response_success("successful", $out);
     }
 

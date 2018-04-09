@@ -8,6 +8,6 @@
     <input name="module_env" value="{{ config('app.env') }}" type="hidden">
     <input type="submit" value="Пополнить"/>
     <input name="ym_merchant_receipt"
-       value='{"customerContact": "{{ $user->email }}","taxSystem": 1, "items":[{"quantity": 1, "price": {"amount": {{ $amount }}}, "tax": 1, "text": {{ json_encode(config('magnetar.tariffs.services.yandex.receipt_text'), JSON_UNESCAPED_UNICODE) }}}]}'
+       value='{"customerContact": "{{ $user->email }}","taxSystem": 1, "items":[{"quantity": 1, "price": {"amount": {{ $amount }}}, "tax": 1, "text": {!! json_encode(config('magnetar.tariffs.services.yandex.receipt_text'), JSON_UNESCAPED_UNICODE) !!}}]}'
        type="hidden"/>
 </form>

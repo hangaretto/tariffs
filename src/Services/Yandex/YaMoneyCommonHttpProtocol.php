@@ -7,6 +7,7 @@ require_once 'Log.php';
 
 use DateTime;
 use Magnetar\Mailing\Jobs\MailingJob;
+use Magnetar\Tariffs\Events\PaymentEvent;
 use Magnetar\Tariffs\References\UserBalanceReference;
 use Magnetar\Tariffs\Services\UserBalanceService;
 use Magnetar\Tariffs\Services\UserDataServices;
@@ -159,9 +160,8 @@ class YaMoneyCommonHttpProtocol
         exit;
     }
     private function save() {
-
         UserDataServices::setData($this->request['customerNumber'], ['last_code' => $this->request['invoiceId']]);
         UserBalanceService::create($this->request['customerNumber'], UserBalanceReference::ADD_BALANCE, floatval($this->request['orderSumAmount']));
-
+        event(new PaymentEvent($this->request));
     }
 }

@@ -19,10 +19,17 @@ class CallbackController extends Controller
      */
     public function paymentAviso(Request $request)
     {
-        $settings = new Settings();
-        $yaMoneyCommonHttpProtocol = new YaMoneyCommonHttpProtocol("paymentAviso", $settings);
-        $yaMoneyCommonHttpProtocol->processRequest($request->all());
-        exit;
+        DB::beginTransaction();
+        try {
+            $settings = new Settings();
+            $yaMoneyCommonHttpProtocol = new YaMoneyCommonHttpProtocol("paymentAviso", $settings);
+            $yaMoneyCommonHttpProtocol->processRequest($request->all());
+            DB::commit();
+            exit;
+        } catch (Exception $ex) {
+            DB::rollBack();
+            exit;
+        }
     }
 
     /**

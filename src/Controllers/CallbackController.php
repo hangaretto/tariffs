@@ -26,8 +26,9 @@ class CallbackController extends Controller
             $yaMoneyCommonHttpProtocol->processRequest($request->all());
             DB::commit();
             exit;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             DB::rollBack();
+            throw $ex;
             exit;
         }
     }
@@ -36,7 +37,6 @@ class CallbackController extends Controller
      * Yandex password callback.
      *
      * @param Request $request
-     * @return ResponseHelper
      */
     public function checkOrder(Request $request)
     {

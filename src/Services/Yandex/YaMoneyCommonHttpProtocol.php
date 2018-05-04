@@ -11,6 +11,7 @@ use Magnetar\Tariffs\Events\PaymentEvent;
 use Magnetar\Tariffs\References\UserBalanceReference;
 use Magnetar\Tariffs\Services\UserBalanceService;
 use Magnetar\Tariffs\Services\UserDataServices;
+use DB;
 
 class YaMoneyCommonHttpProtocol
 {
@@ -57,7 +58,7 @@ class YaMoneyCommonHttpProtocol
     }
     /**
      * CheckOrder request processing. We suppose there are no item with price less
-     * than 100 rubles in the shop.
+     * than min_rubles  in the shop.
      * @param  array $request payment parameters
      * @return string         prepared XML response
      */
@@ -89,10 +90,9 @@ class YaMoneyCommonHttpProtocol
             $request['orderSumAmount'] . ";" . $request['orderSumCurrencyPaycash'] . ";" .
             $request['orderSumBankPaycash'] . ";" . $request['shopId'] . ";" .
             $request['invoiceId'] . ";" . trim($request['customerNumber']) . ";" . $this->settings->SHOP_PASSWORD;
-        $this->log("String to md5: " . $str);
         $md5 = strtoupper(md5($str));
         if ($md5 != strtoupper($request['md5'])) {
-            $this->log("Wait for md5:" . $md5 . ", recieved md5: " . $request['md5']);
+            $this->log("Incorrect md5:");
             return false;
         }
         return true;
@@ -150,8 +150,12 @@ class YaMoneyCommonHttpProtocol
     }
     private function sendResponse($responseBody) {
 
-        if($this->response_code == 0 && $this->action == 'paymentAviso')
+        if($this->response_code == 0 && $this->action == 'paymentAviso') {
             $this->save();
+            DB::commit();
+        } else {
+            DB::rollback();
+        }
 
         $this->log("Response: " . $responseBody);
         header("HTTP/1.0 200");

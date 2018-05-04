@@ -63,8 +63,9 @@ class YaMoneyCommonHttpProtocol
      */
     private function checkOrder($request) {
         $response = null;
-        if ($request['orderSumAmount'] < 100) {
-            $response = $this->buildResponse($this->action, $request['invoiceId'], 100, "The amount should be more than 100 rubles.");
+        $min_sum = (double)config('magnetar.tariffs.services.yandex.min_payment_rub');
+        if ($request['orderSumAmount'] < $min_sum) {
+            $response = $this->buildResponse($this->action, $request['invoiceId'], 100, "The amount should be more than $min_sum rubles.");
         } else {
             $response = $this->buildResponse($this->action, $request['invoiceId'], 0);
         }

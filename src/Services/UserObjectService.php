@@ -202,15 +202,22 @@ class UserObjectService
                         $pay_date->addDay();
 
                         $data = $user_object['data'];
-                        $data['active'] = true;
+                        
 
                         if ($pay_date < $now) {
                             $daily_price += $user_object->price;
-                            $user_object->paid_at = Carbon::now();
+                            if($data['active'] && isset($user_object->paid_at)) {
+                                $user_object->paid_at = $pay_date;
+                            } else {
+                                $user_object->paid_at = Carbon::now();
+                            }    
+                            $data['active'] = true;
                             $user_object->data = json_encode($data);
                             $user_object->save();
                         }
 
+                        $data['active'] = true;
+                        
                         if (isset($data['refresh_period']) && isset($data['refresh_in']) && new Carbon($data['refresh_in']) < $now && isset($data['base_price'])) {
                             $refresh_in = Carbon::now();
                             $data['refresh_in'] = $refresh_in->add(new \DateInterval($data['refresh_period']))->toIso8601String();

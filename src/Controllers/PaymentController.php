@@ -13,6 +13,7 @@ use Magnetar\Tariffs\References\ObjectReference;
 use Magnetar\Tariffs\Services\UserBalanceService;
 use DB;
 use Magnetar\Tariffs\Services\UserObjectService;
+use App\User;
 
 class PaymentController extends Controller
 {
@@ -132,5 +133,19 @@ class PaymentController extends Controller
     public function callback(Request $request)
     {
         return ResponseHelper::response_success('successful');
+    }
+
+    /**
+     * Return yandex payment form.
+     *
+     * @param Request $request
+     * @param int $id
+     * @param float $amount
+     * @return view
+     */
+    public function form(Request $request, $id, $amount)
+    {
+        $user = User::findOrFail($id);
+        return view('magnetar_tariffs::yandex', ['user' => $user, 'amount' => $amount]);
     }
 }

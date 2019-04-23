@@ -5,10 +5,7 @@ Route::group(['prefix' => 'api/v1/magnetar/tariffs'], function () {
     Route::post('/callbacks/paymentAviso', 'Magnetar\Tariffs\Controllers\CallbackController@paymentAviso');
     Route::post('/callbacks/checkOrder', 'Magnetar\Tariffs\Controllers\CallbackController@checkOrder');
 
-    Route::get('/users/{id}/pay/{amount}', function ($id, $amount) {
-        $user = \App\User::findOrFail($id);
-        return view('magnetar_tariffs::yandex', ['user' => $user, 'amount' => $amount]);
-    });
+    Route::get('/users/{id}/pay/{amount}', 'Magnetar\Tariffs\Controllers\PaymentController@form');
 
     Route::group(['middleware' => [config('magnetar.tariffs.middleware.auth')]], function () {
 
